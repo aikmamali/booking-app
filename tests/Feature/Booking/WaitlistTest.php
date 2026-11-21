@@ -19,8 +19,7 @@ use App\Modules\Booking\Models\Booking;
 use App\Modules\Booking\Models\WaitlistEntry;
 use App\Modules\Booking\Settings\BookingPolicySettings;
 use App\Modules\Catalog\Data\PolicyOverrides;
-use App\Modules\Communication\Notifications\WaitlistOfferedNotification;
-use App\Modules\Communication\Notifications\WaitlistPromotedNotification;
+use App\Modules\Communication\Enums\NotificationType;
 use App\Modules\Identity\Models\User;
 use App\Modules\Scheduling\Actions\CancelSession;
 use Illuminate\Console\Scheduling\Schedule;
@@ -111,7 +110,7 @@ describe('auto_book (default)', function (): void {
             ->and($entry->fresh()?->booking_id)->toBe($booking->id)
             ->and(creditsOf($first))->toBe('9.00')
             ->and(Booking::query()->where('user_id', $second->id)->exists())->toBeFalse();
-        Notification::assertSentTo($first, WaitlistPromotedNotification::class);
+        assertNotified($first, NotificationType::WaitlistPromoted);
     });
 
     it('skips a customer who cannot be booked and tries the next', function (): void {
@@ -166,7 +165,7 @@ describe('offer', function (): void {
         expect($this->entry->fresh()?->status)->toBe(WaitlistStatus::Offered)
             ->and($this->entry->fresh()?->offered_until?->toDateTimeString())->toBe('2027-03-20 08:30:00')
             ->and(creditsOf($this->first))->toBe('10.00');
-        Notification::assertSentTo($this->first, WaitlistOfferedNotification::class);
+        assertNotified($this->first, NotificationType::WaitlistOffered);
 
         expect(fn (): Booking => book(customerFor($this->session), $this->session))->toThrow(BookingRejected::class, 'booking.full');
     });
@@ -177,7 +176,7 @@ describe('offer', function (): void {
         expect($booking->user_id)->toBe($this->first->id)
             ->and($this->entry->fresh()?->status)->toBe(WaitlistStatus::Promoted)
             ->and(creditsOf($this->first))->toBe('9.00');
-        Notification::assertSentTo($this->first, WaitlistPromotedNotification::class);
+        assertNotified($this->first, NotificationType::WaitlistPromoted);
     });
 
     it('passes the seat on when the offer lapses', function (): void {

@@ -51,10 +51,10 @@
 - [x] `SeatFreed` → `PromoteFromWaitlist` (auto_book και offer), `ExpireWaitlistOffers`, cut-off
 
 ## 6. Communication (CM-01, CM-02, CM-04)
-- [ ] Notifications για όλα τα events της ενότητας 8.1 (email), σε queue
-- [ ] Προτιμήσεις ειδοποιήσεων ανά τύπο και κανάλι
-- [ ] Ανακοινώσεις / carousel στην αρχική πελάτη
-- [ ] Επεξεργάσιμα πρότυπα email από admin
+- [x] Notifications για όλα τα events της ενότητας 8.1 (email, SMS πίσω από `SmsSender`), σε queue (σταθερές θέσεις και αποδείξεις όταν υπάρξουν)
+- [x] Προτιμήσεις ειδοποιήσεων ανά τύπο και κανάλι
+- [x] Ανακοινώσεις / carousel στην αρχική πελάτη
+- [x] Επεξεργάσιμα πρότυπα email από admin
 
 ## 7. Billing, ελάχιστο (BL-01)
 - [ ] Καταχώρηση είσπραξης (μετρητά, POS, έμβασμα) συνδεδεμένη με συνδρομή

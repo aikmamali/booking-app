@@ -4,27 +4,97 @@ declare(strict_types=1);
 
 return [
     'greeting' => 'Γεια σου :name,',
-    'details' => ':service · :date στις :time · :instructor · Κράτηση :reference',
-    'view_booking' => 'Δες την κράτηση',
-    'confirmed' => [
-        'subject' => 'Επιβεβαίωση κράτησης: :service, :date :time',
-        'body' => 'Η κράτησή σου επιβεβαιώθηκε. Θα βρεις συνημμένο αρχείο για το ημερολόγιό σου.',
+    'channels' => [
+        'mail' => 'Email',
+        'sms' => 'SMS',
     ],
-    'cancelled' => [
-        'subject' => 'Ακύρωση κράτησης: :service, :date :time',
-        'body' => 'Η κράτησή σου ακυρώθηκε. Αν δικαιούσαι επιστροφή, το credit έχει επιστραφεί στη συνδρομή σου.',
+    'types' => [
+        'booking_confirmed' => 'Επιβεβαίωση κράτησης',
+        'booking_cancelled' => 'Ακύρωση κράτησης',
+        'booking_rescheduled' => 'Μεταφορά κράτησης',
+        'booking_reminder' => 'Υπενθύμιση μαθήματος',
+        'session_cancelled' => 'Ακύρωση μαθήματος από το studio',
+        'waitlist_promoted' => 'Θέση από λίστα αναμονής',
+        'waitlist_offered' => 'Προσφορά θέσης από λίστα αναμονής',
+        'membership_expiring' => 'Λήξη συνδρομής',
+        'low_balance' => 'Χαμηλό υπόλοιπο credits',
     ],
-    'reminder' => [
-        'subject' => 'Υπενθύμιση: :service, :date :time',
-        'body' => 'Σου θυμίζουμε το μάθημά σου.',
+    'actions' => [
+        'booking_confirmed' => 'Δες την κράτηση',
+        'booking_cancelled' => 'Δες την κράτηση',
+        'booking_rescheduled' => 'Δες την κράτηση',
+        'booking_reminder' => 'Δες την κράτηση',
+        'session_cancelled' => 'Κλείσε άλλο μάθημα',
+        'waitlist_promoted' => 'Δες την κράτηση',
+        'waitlist_offered' => 'Αποδοχή θέσης',
+        'membership_expiring' => 'Η συνδρομή μου',
+        'low_balance' => 'Η συνδρομή μου',
     ],
-    'waitlist_promoted' => [
-        'subject' => 'Βρήκες θέση: :service, :date :time',
-        'body' => 'Ελευθερώθηκε θέση και η κράτησή σου από τη λίστα αναμονής επιβεβαιώθηκε.',
+    'templates' => [
+        'booking_confirmed' => [
+            'subject' => 'Επιβεβαίωση κράτησης: :service, :date :time',
+            'body' => "Η κράτησή σου επιβεβαιώθηκε.\n\n:service · :date στις :time · :instructor · Κράτηση :reference\n\nΘα βρεις συνημμένο αρχείο για το ημερολόγιό σου.",
+        ],
+        'booking_cancelled' => [
+            'subject' => 'Ακύρωση κράτησης: :service, :date :time',
+            'body' => "Η κράτησή σου ακυρώθηκε.\n\n:service · :date στις :time · Κράτηση :reference\n\nΑν δικαιούσαι επιστροφή, το credit έχει επιστραφεί στη συνδρομή σου.",
+        ],
+        'booking_rescheduled' => [
+            'subject' => 'Η κράτησή σου μεταφέρθηκε: :service, :date :time',
+            'body' => "Η κράτησή σου μεταφέρθηκε.\n\nΝέα ώρα: :service · :date στις :time · :instructor · Κράτηση :reference",
+        ],
+        'booking_reminder' => [
+            'subject' => 'Υπενθύμιση: :service, :date :time',
+            'body' => "Σου θυμίζουμε το μάθημά σου.\n\n:service · :date στις :time · :instructor",
+        ],
+        'session_cancelled' => [
+            'subject' => 'Ακυρώθηκε το μάθημα: :service, :date :time',
+            'body' => "Λυπούμαστε, το μάθημα :service της :date στις :time ακυρώθηκε (:reason).\n\nΤο credit επιστράφηκε στη συνδρομή σου.",
+        ],
+        'waitlist_promoted' => [
+            'subject' => 'Βρήκες θέση: :service, :date :time',
+            'body' => "Ελευθερώθηκε θέση και η κράτησή σου από τη λίστα αναμονής επιβεβαιώθηκε.\n\n:service · :date στις :time · Κράτηση :reference",
+        ],
+        'waitlist_offered' => [
+            'subject' => 'Ελεύθερη θέση: :service, :date :time',
+            'body' => 'Ελευθερώθηκε θέση στο :service της :date στις :time. Την κρατάμε για σένα έως τις :until.',
+        ],
+        'membership_expiring' => [
+            'subject' => 'Η συνδρομή σου λήγει στις :ends_on',
+            'body' => "Η συνδρομή «:package» λήγει στις :ends_on και έχει υπόλοιπο :balance credits.\n\nΤα αχρησιμοποίητα credits χάνονται με τη λήξη.",
+        ],
+        'low_balance' => [
+            'subject' => 'Σου έμειναν :balance credits',
+            'body' => 'Στη συνδρομή «:package» σου έμειναν :balance credits. Ανανέωσε στην υποδοχή για να συνεχίσεις τις κρατήσεις.',
+        ],
     ],
-    'waitlist_offered' => [
-        'subject' => 'Ελεύθερη θέση: :service, :date :time',
-        'body' => 'Ελευθερώθηκε θέση στο :service της :date στις :time. Την κρατάμε για σένα έως τις :until.',
-        'action' => 'Αποδοχή θέσης',
+    'preferences' => [
+        'title' => 'Ειδοποιήσεις',
+        'intro' => 'Διάλεξε πώς θέλεις να ενημερώνεσαι.',
+        'type' => 'Ειδοποίηση',
+        'marketing' => 'Θέλω να λαμβάνω ενημερώσεις και προσφορές με email.',
+        'saved' => 'Οι προτιμήσεις σου αποθηκεύτηκαν.',
+        'save' => 'Αποθήκευση',
+    ],
+    'announcements' => [
+        'label' => 'Ανακοίνωση',
+        'plural' => 'Ανακοινώσεις',
+        'title' => 'Ανακοινώσεις',
+    ],
+    'admin' => [
+        'navigation_group' => 'Επικοινωνία',
+        'templates' => 'Πρότυπα email',
+        'template' => 'Πρότυπο email',
+        'subject' => 'Θέμα',
+        'body' => 'Κείμενο',
+        'placeholders' => 'Διαθέσιμα πεδία: :list. Κενό πεδίο σημαίνει το προεπιλεγμένο κείμενο.',
+        'customized' => 'Προσαρμοσμένο',
+        'fields' => [
+            'title' => 'Τίτλος',
+            'body' => 'Κείμενο',
+            'image' => 'Εικόνα',
+            'published_from' => 'Δημοσίευση από',
+            'published_until' => 'Δημοσίευση έως',
+        ],
     ],
 ];

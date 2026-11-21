@@ -2,12 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Modules\Booking\Contracts\BookingSummary;
-use App\Modules\Communication\Notifications\BookingCancelledNotification;
-use App\Modules\Communication\Notifications\BookingConfirmedNotification;
-use App\Modules\Communication\Notifications\BookingReminderNotification;
+use App\Modules\Communication\Enums\NotificationType;
+use App\Modules\Communication\Notifications\CustomerNotification;
 use App\Modules\Identity\Notifications\InvitationNotification;
-use Carbon\CarbonImmutable;
 
 /*
 | Regression: notifications with readonly properties could not be rebuilt from the queue
@@ -19,12 +16,5 @@ it('survives the round trip through the queue', function (object $notification):
     expect($restored)->toEqual($notification);
 })->with([
     'invitation' => fn (): InvitationNotification => new InvitationNotification('token'),
-    'booking confirmed' => fn (): BookingConfirmedNotification => new BookingConfirmedNotification(summary()),
-    'booking cancelled' => fn (): BookingCancelledNotification => new BookingCancelledNotification(summary()),
-    'reminder' => fn (): BookingReminderNotification => new BookingReminderNotification(summary()),
+    'customer notification' => fn (): CustomerNotification => new CustomerNotification(NotificationType::BookingConfirmed, ['service' => 'Pilates'], 'https://x', 'ICS'),
 ]);
-
-function summary(): BookingSummary
-{
-    return new BookingSummary(1, 'ULID', 'REF', 1, 'Pilates', 'Ελένη', CarbonImmutable::now(), CarbonImmutable::now(), 'confirmed', null, 'ICS', 'https://g');
-}

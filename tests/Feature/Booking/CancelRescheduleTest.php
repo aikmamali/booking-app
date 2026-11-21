@@ -12,7 +12,7 @@ use App\Modules\Booking\Events\SeatFreed;
 use App\Modules\Booking\Exceptions\BookingRejected;
 use App\Modules\Booking\Models\Booking;
 use App\Modules\Booking\Settings\BookingPolicySettings;
-use App\Modules\Communication\Notifications\BookingCancelledNotification;
+use App\Modules\Communication\Enums\NotificationType;
 use App\Modules\Identity\Models\User;
 use App\Modules\Scheduling\Models\ClassSession;
 use Carbon\CarbonImmutable;
@@ -42,7 +42,7 @@ it('refunds up to and including the cut-off (180 minutes)', function (int $minut
         ->and($cancelled->late_cancel)->toBeFalse()
         ->and($cancelled->cancel_reason)->toBe('Δουλειά')
         ->and(creditsOf($this->customer))->toBe('10.00');
-    Notification::assertSentTo($this->customer, BookingCancelledNotification::class);
+    assertNotified($this->customer, NotificationType::BookingCancelled);
 })->with([
     '181 minutes before' => [181, true],
     '180 minutes before' => [180, true],

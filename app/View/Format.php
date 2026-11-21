@@ -14,13 +14,13 @@ use NumberFormatter;
  */
 final class Format
 {
-    public static function credits(Credits $credits): string
+    public static function credits(Credits $credits, ?string $locale = null): string
     {
         $text = $credits->halves() % 2 === 0
             ? (string) intdiv($credits->halves(), 2)
             : rtrim(rtrim($credits->toDecimal(), '0'), '.');
 
-        return app()->getLocale() === 'el' ? str_replace('.', ',', $text) : $text;
+        return ($locale ?? app()->getLocale()) === 'el' ? str_replace('.', ',', $text) : $text;
     }
 
     public static function money(Money $money): string
