@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Identity\Filament\Resources\UserResource\Pages;
 
+use App\Modules\Identity\Filament\Exports\UserExporter;
 use App\Modules\Identity\Filament\Resources\UserResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
@@ -14,6 +15,6 @@ final class ListUsers extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [CreateAction::make()];
+        return [CreateAction::make(), UserExporter::action()];
     }
 }

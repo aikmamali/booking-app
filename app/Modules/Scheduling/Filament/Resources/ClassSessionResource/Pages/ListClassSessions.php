@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Scheduling\Filament\Resources\ClassSessionResource\Pages;
 
 use App\Modules\Scheduling\Actions\GenerateSessions;
+use App\Modules\Scheduling\Filament\Exports\ClassSessionExporter;
 use App\Modules\Scheduling\Filament\Resources\ClassSessionResource;
 use App\Modules\Scheduling\Models\Schedule;
 use Filament\Actions\Action;
@@ -25,6 +26,7 @@ final class ListClassSessions extends ListRecords
 
                     Notification::make()->success()->title(__('scheduling.notices.generated', ['count' => $count]))->send();
                 }),
+            ClassSessionExporter::action(),
         ];
     }
 }
