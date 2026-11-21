@@ -10,6 +10,7 @@ use App\Modules\Identity\Models\User;
 use App\Modules\Membership\Contracts\CreditLedger;
 use App\Modules\Membership\Models\Membership;
 use App\Modules\Scheduling\Models\ClassSession;
+use App\Shared\BusinessTime;
 use App\Shared\Credits;
 
 /**
@@ -37,7 +38,7 @@ function bookableSession(array $attributes = [], ?Service $service = null): Clas
 function customerFor(ClassSession $session, string $credits = '10'): User
 {
     $customer = User::factory()->customer()->create();
-    soldMembership($customer, ['credits' => Credits::of($credits)], '2027-03-20', $session->service);
+    soldMembership($customer, ['credits' => Credits::of($credits)], app(BusinessTime::class)->today(), $session->service);
 
     return $customer;
 }

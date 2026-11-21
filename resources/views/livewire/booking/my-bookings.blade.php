@@ -23,6 +23,33 @@
         </div>
     @endif
 
+    @if ($waitlist->isNotEmpty())
+        <div class="rounded-md border border-amber-200 bg-amber-50 p-3">
+            <h2 class="mb-2 text-sm font-semibold">{{ __('booking.waitlist.title') }}</h2>
+            <ul class="space-y-2 text-sm">
+                @foreach ($waitlist as $entry)
+                    <li class="flex flex-wrap items-center justify-between gap-2">
+                        <span>
+                            {{ app(\App\Shared\BusinessTime::class)->toLocal($entry->session->starts_at)->format('d/m H:i') }} · {{ $entry->session->service->name }}
+                            —
+                            @if ($entry->status === \App\Modules\Booking\Enums\WaitlistStatus::Offered)
+                                <strong>{{ __('booking.waitlist.offer_until', ['time' => app(\App\Shared\BusinessTime::class)->toLocal($entry->offered_until)->format('H:i')]) }}</strong>
+                            @else
+                                {{ __('booking.waitlist.your_position', ['position' => $entry->position()]) }}
+                            @endif
+                        </span>
+                        <span class="flex gap-2">
+                            @if ($entry->status === \App\Modules\Booking\Enums\WaitlistStatus::Offered)
+                                <button type="button" wire:click="acceptOffer('{{ $entry->public_id }}')" class="rounded-md bg-teal-700 px-3 py-1 font-semibold text-white">{{ __('booking.waitlist.accept') }}</button>
+                            @endif
+                            <button type="button" wire:click="leaveWaitlist('{{ $entry->public_id }}')" class="underline">{{ __('booking.waitlist.leave') }}</button>
+                        </span>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     @forelse ($groups as $day => $bookings)
         <div>
             <h2 class="mb-2 text-sm font-semibold text-gray-700">{{ ucfirst(\Carbon\CarbonImmutable::parse($day)->locale(app()->getLocale())->translatedFormat('l d/m/Y')) }}</h2>

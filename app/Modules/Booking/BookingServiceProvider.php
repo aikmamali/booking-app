@@ -6,8 +6,10 @@ namespace App\Modules\Booking;
 
 use App\Modules\Booking\Contracts\NoRequiredForms;
 use App\Modules\Booking\Contracts\RequiredForms;
+use App\Modules\Booking\Events\SeatFreed;
 use App\Modules\Booking\Listeners\CancelBookingsWhenSessionCancelled;
 use App\Modules\Booking\Listeners\CancelFutureBookingsOfDeletedUser;
+use App\Modules\Booking\Listeners\PromoteWhenSeatFreed;
 use App\Modules\Booking\Models\Booking;
 use App\Modules\Booking\Policies\BookingPolicy;
 use App\Modules\Booking\Rules\BookingRuleChain;
@@ -58,5 +60,6 @@ final class BookingServiceProvider extends ServiceProvider
 
         Event::listen(SessionCancelled::class, CancelBookingsWhenSessionCancelled::class);
         Event::listen(UserDeleted::class, CancelFutureBookingsOfDeletedUser::class);
+        Event::listen(SeatFreed::class, PromoteWhenSeatFreed::class);
     }
 }

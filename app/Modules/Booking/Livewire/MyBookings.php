@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Modules\Booking\Livewire;
 
+use App\Modules\Booking\Actions\AcceptWaitlistOffer;
+use App\Modules\Booking\Actions\LeaveWaitlist;
 use App\Modules\Booking\Enums\BookingStatus;
+use App\Modules\Booking\Exceptions\BookingRejected;
 use App\Modules\Booking\Models\Booking;
+use App\Modules\Booking\Models\WaitlistEntry;
 use App\Shared\BusinessTime;
 use App\Shared\Clock;
 use Carbon\CarbonImmutable;
@@ -41,15 +45,53 @@ final class MyBookings extends Component
         $this->offset += $delta;
     }
 
+    public function acceptOffer(string $publicId, AcceptWaitlistOffer $accept): void
+    {
+        $entry = $this->myEntry($publicId);
+
+        try {
+            $booking = $accept->handle($entry);
+        } catch (BookingRejected $e) {
+            session()->flash('status', $e->translated());
+
+            return;
+        }
+
+        session()->flash('status', __('booking.notices.booked'));
+        $this->redirectRoute('app.bookings.show', $booking->public_id);
+    }
+
+    public function leaveWaitlist(string $publicId, LeaveWaitlist $leave): void
+    {
+        $leave->handle($this->myEntry($publicId));
+        session()->flash('status', __('booking.waitlist.left'));
+    }
+
     public function render(BusinessTime $time, Clock $clock): View
     {
         [$from, $to] = $this->range($time, $clock);
 
         return view('livewire.booking.my-bookings', [
+            'waitlist' => $this->view === 'upcoming' ? $this->waitlist($clock) : collect(),
             'groups' => $this->groups($this->query($clock, $from, $to)->get(), $time),
             'from' => $from,
             'to' => $to?->subDay(),
         ])->title(__('booking.mine.title'));
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection<int, WaitlistEntry>
+     */
+    private function waitlist(Clock $clock): \Illuminate\Database\Eloquent\Collection
+    {
+        return WaitlistEntry::query()->live()->with('session.service')->where('user_id', auth()->id())
+            ->whereHas('session', fn ($q) => $q->where('starts_at', '>', $clock->now()))
+            ->orderBy('id')->get();
+    }
+
+    private function myEntry(string $publicId): WaitlistEntry
+    {
+        return WaitlistEntry::query()->where('public_id', $publicId)->where('user_id', auth()->id())->firstOrFail();
     }
 
     /**

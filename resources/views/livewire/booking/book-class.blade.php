@@ -58,6 +58,10 @@
         </ul>
     @elseif ($summary === null)
         <h2 class="text-lg font-semibold">{{ $service->name }} · {{ \Carbon\CarbonImmutable::parse($date)->locale(app()->getLocale())->translatedFormat('l d/m') }}</h2>
+        <x-status />
+        @if ($error)
+            <p role="alert" class="rounded-md bg-red-50 p-3 text-sm text-red-800">{{ $error }}</p>
+        @endif
         <ul class="space-y-2">
             @forelse ($slots as $slot)
                 <li class="flex items-center justify-between rounded-md border border-gray-200 p-3">
@@ -71,6 +75,16 @@
                     </div>
                     @if ($slot['state'] === A::AVAILABLE && ! $slot['mine'])
                         <button type="button" wire:click="chooseSession('{{ $slot['public_id'] }}')" class="rounded-md bg-teal-700 px-4 py-2 font-semibold text-white">{{ __('booking.book.select') }}</button>
+                    @elseif ($slot['my_position'] !== null)
+                        <div class="text-right text-sm">
+                            <span class="block">{{ __('booking.waitlist.your_position', ['position' => $slot['my_position']]) }}</span>
+                            <button type="button" wire:click="leaveWaitlist('{{ $slot['public_id'] }}')" class="underline">{{ __('booking.waitlist.leave') }}</button>
+                        </div>
+                    @elseif ($slot['state'] === A::FULL && ! $slot['mine'] && $slot['waitlist_open'])
+                        <button type="button" wire:click="joinWaitlist('{{ $slot['public_id'] }}')" class="rounded-md border border-teal-700 px-3 py-2 text-sm text-teal-800">
+                            {{ __('booking.waitlist.join') }}
+                            <span class="block text-xs">{{ trans_choice('booking.waitlist.waiting', $slot['waiting'], ['count' => $slot['waiting']]) }}</span>
+                        </button>
                     @endif
                 </li>
             @empty

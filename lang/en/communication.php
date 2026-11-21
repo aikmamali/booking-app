@@ -18,4 +18,13 @@ return [
         'subject' => 'Reminder: :service, :date :time',
         'body' => 'A reminder about your class.',
     ],
+    'waitlist_promoted' => [
+        'subject' => 'You got a seat: :service, :date :time',
+        'body' => 'A seat became free and your waitlist booking is confirmed.',
+    ],
+    'waitlist_offered' => [
+        'subject' => 'Seat available: :service, :date :time',
+        'body' => 'A seat became free in :service on :date at :time. We hold it for you until :until.',
+        'action' => 'Accept the seat',
+    ],
 ];

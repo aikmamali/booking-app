@@ -41,14 +41,14 @@
 - [x] Κράτηση και ακύρωση από προσωπικό με override και audit
 - [x] Παρουσία / no-show, `MarkNoShows` (χωρίς check-in: αυτόματα attended, ADR 0005)
 - [x] Ακύρωση session → refund σε όλους
-- [x] Customer UI: υπηρεσία → μηνιαίο ημερολόγιο → ώρες με διαθέσιμες θέσεις → επιβεβαίωση (μέγεθος λίστας αναμονής στο βήμα 5)
+- [x] Customer UI: υπηρεσία → μηνιαίο ημερολόγιο → ώρες με διαθέσιμες θέσεις και λίστα αναμονής → επιβεβαίωση
 - [x] «Τα ραντεβού μου»: Upcoming, Μήνας, Εβδομάδα, Ιστορικό, λεπτομέρειες, .ics
 - [x] `SendBookingReminders`
 - [x] Test: δύο ταυτόχρονες κρατήσεις για την τελευταία θέση
 
 ## 5. Waitlist (WL-01 έως WL-03)
-- [ ] Είσοδος και έξοδος από λίστα αναμονής, θέση στην ουρά
-- [ ] `SeatFreed` → `PromoteFromWaitlist` (auto_book και offer), `ExpireWaitlistOffers`, cut-off
+- [x] Είσοδος και έξοδος από λίστα αναμονής, θέση στην ουρά
+- [x] `SeatFreed` → `PromoteFromWaitlist` (auto_book και offer), `ExpireWaitlistOffers`, cut-off
 
 ## 6. Communication (CM-01, CM-02, CM-04)
 - [ ] Notifications για όλα τα events της ενότητας 8.1 (email), σε queue

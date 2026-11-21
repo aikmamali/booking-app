@@ -42,7 +42,7 @@ final readonly class BookingContextFactory
             now: $now,
             policy: EffectivePolicy::for($session->service, $this->settings),
             membership: $this->memberships->choose($userId, $session->service_id, $session->service->credit_cost, $localDate),
-            takenSeats: SeatCounter::taken($session->id, $ignoreBookingId),
+            takenSeats: SeatCounter::taken($session->id, $ignoreBookingId, $userId),
             alreadyBooked: $mine()->active()->where('class_session_id', $session->id)->exists(),
             bookingsThatDay: $this->bookingsOn($mine(), $localDate),
             activeBookings: $mine()->active()->whereHas('session', fn ($q) => $q->where('starts_at', '>', $now))->count(),

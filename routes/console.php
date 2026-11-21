@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\Booking\Jobs\CloseFinishedSessionsJob;
+use App\Modules\Booking\Jobs\ExpireWaitlistOffersJob;
 use App\Modules\Booking\Jobs\SendBookingRemindersJob;
 use App\Modules\Membership\Jobs\ExpireMembershipsJob;
 use App\Modules\Membership\Jobs\WarnExpiringMembershipsJob;
@@ -42,3 +43,8 @@ Schedule::job(new CloseFinishedSessionsJob)
     ->everyFifteenMinutes()
     ->withoutOverlapping()
     ->name('mark-no-shows');
+
+Schedule::job(new ExpireWaitlistOffersJob)
+    ->everyMinute()
+    ->withoutOverlapping()
+    ->name('expire-waitlist-offers');

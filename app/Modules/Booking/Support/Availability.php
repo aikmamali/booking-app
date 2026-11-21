@@ -6,6 +6,7 @@ namespace App\Modules\Booking\Support;
 
 use App\Modules\Booking\Enums\BookingStatus;
 use App\Modules\Booking\Models\Booking;
+use App\Modules\Booking\Models\WaitlistEntry;
 use App\Modules\Booking\Settings\BookingPolicySettings;
 use App\Modules\Catalog\Models\Service;
 use App\Modules\Scheduling\Enums\SessionStatus;
@@ -61,7 +62,7 @@ final readonly class Availability
     }
 
     /**
-     * @return list<array{public_id: string, date: string, time: string, free: int, capacity: int, state: string, mine: bool}>
+     * @return list<array{public_id: string, date: string, time: string, free: int, capacity: int, state: string, mine: bool, waiting: int, my_position: ?int, waitlist_open: bool}>
      */
     public function day(Service $service, string $date, ?int $userId = null): array
     {
@@ -71,7 +72,7 @@ final readonly class Availability
     }
 
     /**
-     * @return list<array{public_id: string, date: string, time: string, free: int, capacity: int, state: string, mine: bool}>
+     * @return list<array{public_id: string, date: string, time: string, free: int, capacity: int, state: string, mine: bool, waiting: int, my_position: ?int, waitlist_open: bool}>
      */
     private function slotsBetween(Service $service, CarbonImmutable $fromDate, CarbonImmutable $toDate, ?int $userId = null): array
     {
@@ -86,6 +87,7 @@ final readonly class Availability
         $taken = $this->takenSeats($ids);
         $mine = $userId === null ? [] : $this->bookedBy($userId, $ids);
         $policy = EffectivePolicy::for($service, $this->settings);
+        $queues = $this->queues($ids, $userId);
 
         return array_values($sessions->map(fn (ClassSession $s): array => [
             'public_id' => $s->public_id,
@@ -95,6 +97,11 @@ final readonly class Availability
             'capacity' => $s->capacity,
             'state' => $this->state($s, $taken[$s->id] ?? 0, $policy),
             'mine' => in_array($s->id, $mine, true),
+            'waiting' => $queues[$s->id]['size'] ?? 0,
+            'my_position' => $queues[$s->id]['mine'] ?? null,
+            'waitlist_open' => $policy->waitlistEnabled
+                && ($queues[$s->id]['size'] ?? 0) < $policy->waitlistMaxSize
+                && $this->clock->now()->lt($s->starts_at->subMinutes($this->settings->waitlist_cutoff_minutes)),
         ])->all());
     }
 
@@ -128,9 +135,35 @@ final readonly class Availability
      */
     private function takenSeats(array $sessionIds): array
     {
-        return Booking::query()->active()->whereIn('class_session_id', $sessionIds)
+        $taken = Booking::query()->active()->whereIn('class_session_id', $sessionIds)
             ->selectRaw('class_session_id, count(*) as taken')->groupBy('class_session_id')
             ->toBase()->pluck('taken', 'class_session_id')->map(fn (mixed $n): int => (int) $n)->all();
+
+        foreach ($sessionIds as $id) {
+            $taken[$id] = ($taken[$id] ?? 0) + SeatCounter::heldByOffers($id);
+        }
+
+        return $taken;
+    }
+
+    /**
+     * Queue size per session and the customer's 1-based place in it.
+     *
+     * @param  array<int, int>  $sessionIds
+     * @return array<int, array{size: int, mine: ?int}>
+     */
+    private function queues(array $sessionIds, ?int $userId): array
+    {
+        $queues = [];
+
+        foreach (WaitlistEntry::query()->live()->whereIn('class_session_id', $sessionIds)->orderBy('id')->get(['class_session_id', 'user_id']) as $entry) {
+            $queue = $queues[$entry->class_session_id] ?? ['size' => 0, 'mine' => null];
+            $queue['size']++;
+            $queue['mine'] ??= $entry->user_id === $userId ? $queue['size'] : null;
+            $queues[$entry->class_session_id] = $queue;
+        }
+
+        return $queues;
     }
 
     /**
