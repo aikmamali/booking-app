@@ -39,7 +39,7 @@ final readonly class SellPackage
 
             $this->ledger->record($membership->id, TransactionType::Purchase, $package->credits, actorId: $actorId);
 
-            event(new MembershipSold($membership->id, $data->user_id, $package->price_cents, $data->payment_method));
+            event(new MembershipSold($membership->id, $data->user_id, $package->price_cents, $data->payment_method, $actorId));
 
             return $membership;
         });

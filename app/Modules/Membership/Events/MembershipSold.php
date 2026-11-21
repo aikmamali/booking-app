@@ -15,5 +15,11 @@ final readonly class MembershipSold implements ShouldDispatchAfterCommit
 {
     use Dispatchable;
 
-    public function __construct(public int $membershipId, public int $userId, public int $priceCents, public PaymentMethod $method) {}
+    public function __construct(
+        public int $membershipId,
+        public int $userId,
+        public int $priceCents,
+        public PaymentMethod $method,
+        public ?int $actorId = null,
+    ) {}
 }
