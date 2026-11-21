@@ -13,3 +13,4 @@ pest()->extend(TestCase::class)
     ->in('Feature');
 
 require_once __DIR__.'/Feature/Scheduling/helpers.php';
+require_once __DIR__.'/Feature/Membership/helpers.php';
