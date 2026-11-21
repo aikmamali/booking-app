@@ -7,7 +7,7 @@ namespace App\Modules\Scheduling\Actions;
 use App\Modules\Scheduling\Exceptions\SessionChangeRejected;
 use App\Modules\Scheduling\Models\ClassSession;
 use App\Modules\Scheduling\Models\Closure;
-use App\Modules\Scheduling\Support\BusinessTime;
+use App\Shared\BusinessTime;
 use App\Shared\Clock;
 use Illuminate\Support\Facades\DB;
 

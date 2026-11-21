@@ -25,13 +25,13 @@
 - [x] Αλλαγή και ακύρωση session (το refund των κρατήσεων έρχεται στο βήμα 4)
 
 ## 3. Membership (MB-01, MB-02, MB-04, MB-05, MB-07)
-- [ ] Packages + pivot υπηρεσιών
-- [ ] Memberships με snapshot όρων πακέτου
-- [ ] `CreditLedger` interface + υλοποίηση με `credit_transactions` (append-only, `balance_after`)
-- [ ] `MembershipSelector` (FEFO)
-- [ ] Πώληση πακέτου από υποδοχή, χειροκίνητη διόρθωση με αιτιολογία
-- [ ] `ExpireMemberships`, `WarnExpiringMemberships`
-- [ ] Test: ledger invariant
+- [x] Packages + pivot υπηρεσιών
+- [x] Memberships με snapshot όρων πακέτου
+- [x] `CreditLedger` interface + υλοποίηση με `credit_transactions` (append-only, `balance_after`)
+- [x] `MembershipSelector` (FEFO)
+- [x] Πώληση πακέτου από το admin (υποδοχή αργότερα, ADR 0002), χειροκίνητη διόρθωση με αιτιολογία
+- [x] `ExpireMemberships`, `WarnExpiringMemberships`
+- [x] Test: ledger invariant
 
 ## 4. Booking (BK-01, BK-02, BK-04 έως BK-09)
 - [ ] Enum `BookingStatus` με transitions (ενότητα 7.1)

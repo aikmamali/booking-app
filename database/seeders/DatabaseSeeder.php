@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Modules\Billing\Enums\PaymentMethod;
 use App\Modules\Catalog\Models\Service;
 use App\Modules\Catalog\Models\ServiceCategory;
 use App\Modules\Identity\Models\User;
+use App\Modules\Membership\Actions\SavePackage;
+use App\Modules\Membership\Actions\SellPackage;
+use App\Modules\Membership\Data\PackageData;
+use App\Modules\Membership\Data\SaleData;
 use App\Modules\Scheduling\Actions\GenerateSessions;
 use App\Modules\Scheduling\Enums\Weekday;
 use App\Modules\Scheduling\Models\Schedule;
@@ -51,6 +56,25 @@ final class DatabaseSeeder extends Seeder
         }
 
         $generateSessions->handle();
+
+        $this->packagesAndSales(array_map(fn (Service $s): int => $s->id, $services));
+    }
+
+    /**
+     * @param  list<int>  $serviceIds
+     */
+    private function packagesAndSales(array $serviceIds): void
+    {
+        $save = app(SavePackage::class);
+        $ten = $save->handle(null, new PackageData(['el' => '10 μαθήματα', 'en' => '10 classes'], Credits::of(10), 90, 15000, 24, true, true, $serviceIds));
+        $save->handle(null, new PackageData(['el' => '4 μαθήματα', 'en' => '4 classes'], Credits::of(4), 30, 7000, 24, true, true, $serviceIds));
+
+        $sell = app(SellPackage::class);
+        $customers = User::role('customer')->orderBy('id')->limit(10)->pluck('id');
+
+        foreach ($customers as $customerId) {
+            $sell->handle(new SaleData($customerId, $ten->id, now()->toDateString(), PaymentMethod::Cash));
+        }
     }
 
     private function service(ServiceCategory $category, string $name, int $position, int $minutes, int $seats, string $credits, ?int $priceCents): Service

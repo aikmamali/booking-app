@@ -11,7 +11,7 @@ use App\Modules\Scheduling\Data\SessionChangeData;
 use App\Modules\Scheduling\Enums\SessionStatus;
 use App\Modules\Scheduling\Filament\Resources\ClassSessionResource\Pages\ListClassSessions;
 use App\Modules\Scheduling\Models\ClassSession;
-use App\Modules\Scheduling\Support\BusinessTime;
+use App\Shared\BusinessTime;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;

@@ -12,6 +12,7 @@ use App\Modules\Identity\Livewire\Profile;
 use App\Modules\Identity\Livewire\Register;
 use App\Modules\Identity\Livewire\ResetPasswordForm;
 use App\Modules\Identity\Livewire\VerifyEmailNotice;
+use App\Modules\Membership\Livewire\MyMemberships;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/app');
@@ -40,6 +41,7 @@ Route::prefix('app')->group(function (): void {
         Route::middleware('verified')->group(function (): void {
             Route::get('/', Home::class)->name('app.home');
             Route::get('profile', Profile::class)->name('app.profile');
+            Route::get('membership', MyMemberships::class)->name('app.membership');
         });
     });
 });

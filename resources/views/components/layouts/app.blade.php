@@ -14,9 +14,10 @@
     <header class="border-b border-gray-200">
         <nav class="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3" aria-label="{{ __('app.nav.label') }}">
             <a href="{{ auth()->check() ? route('app.home') : route('app.login') }}" class="font-semibold">{{ __('app.name') }}</a>
-            <div class="flex items-center gap-4 text-sm">
+            <div class="flex items-center gap-3 whitespace-nowrap text-sm sm:gap-4">
                 @auth
-                    <a href="{{ route('app.profile') }}" class="underline-offset-4 hover:underline">{{ __('identity.profile.title') }}</a>
+                    <a href="{{ route('app.membership') }}" class="underline-offset-4 hover:underline">{{ __('membership.mine.nav') }}</a>
+                    <a href="{{ route('app.profile') }}" class="underline-offset-4 hover:underline">{{ __('identity.profile.nav') }}</a>
                     <form method="POST" action="{{ route('app.logout') }}">
                         @csrf
                         <button type="submit" class="underline-offset-4 hover:underline">{{ __('identity.logout') }}</button>

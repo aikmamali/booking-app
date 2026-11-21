@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Livewire\ModuleComponents;
+use App\Modules\Booking\Settings\BookingPolicySettings;
+use App\Shared\BusinessTime;
 use App\Shared\Clock;
 use App\Shared\SystemClock;
 use Carbon\CarbonImmutable;
@@ -17,6 +19,10 @@ final class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(Clock::class, SystemClock::class);
+        $this->app->bind(BusinessTime::class, fn ($app): BusinessTime => new BusinessTime(
+            $app->make(BookingPolicySettings::class)->timezone,
+            $app->make(Clock::class),
+        ));
     }
 
     public function boot(): void

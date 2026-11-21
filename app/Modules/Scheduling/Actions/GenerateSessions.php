@@ -9,7 +9,7 @@ use App\Modules\Scheduling\Events\SessionsGenerated;
 use App\Modules\Scheduling\Models\ClassSession;
 use App\Modules\Scheduling\Models\Closure;
 use App\Modules\Scheduling\Models\Schedule;
-use App\Modules\Scheduling\Support\BusinessTime;
+use App\Shared\BusinessTime;
 use App\Shared\Clock;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;

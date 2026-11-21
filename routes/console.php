@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Modules\Membership\Jobs\ExpireMembershipsJob;
+use App\Modules\Membership\Jobs\WarnExpiringMembershipsJob;
 use App\Modules\Scheduling\Jobs\GenerateSessionsJob;
 use Illuminate\Support\Facades\Schedule;
 
@@ -15,3 +17,15 @@ Schedule::job(new GenerateSessionsJob)
     ->timezone('Europe/Athens')
     ->withoutOverlapping()
     ->name('generate-sessions');
+
+Schedule::job(new ExpireMembershipsJob)
+    ->dailyAt('00:10')
+    ->timezone('Europe/Athens')
+    ->withoutOverlapping()
+    ->name('expire-memberships');
+
+Schedule::job(new WarnExpiringMembershipsJob)
+    ->dailyAt('10:00')
+    ->timezone('Europe/Athens')
+    ->withoutOverlapping()
+    ->name('warn-expiring-memberships');

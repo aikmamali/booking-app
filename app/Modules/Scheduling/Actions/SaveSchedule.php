@@ -9,7 +9,7 @@ use App\Modules\Scheduling\Data\ScheduleData;
 use App\Modules\Scheduling\Exceptions\SessionChangeRejected;
 use App\Modules\Scheduling\Models\ClassSession;
 use App\Modules\Scheduling\Models\Schedule;
-use App\Modules\Scheduling\Support\BusinessTime;
+use App\Shared\BusinessTime;
 use App\Shared\Clock;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;

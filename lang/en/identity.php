@@ -69,6 +69,7 @@ return [
         'verified' => 'Your email is verified.',
     ],
     'profile' => [
+        'nav' => 'Profile',
         'title' => 'My profile',
         'details' => 'Details',
         'save' => 'Save',
