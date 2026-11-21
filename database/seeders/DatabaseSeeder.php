@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Modules\Billing\Enums\PaymentMethod;
+use App\Modules\Booking\Actions\BookSession;
+use App\Modules\Booking\Data\BookingRequest;
+use App\Modules\Booking\Exceptions\BookingRejected;
 use App\Modules\Catalog\Models\Service;
 use App\Modules\Catalog\Models\ServiceCategory;
 use App\Modules\Identity\Models\User;
@@ -14,6 +17,7 @@ use App\Modules\Membership\Data\PackageData;
 use App\Modules\Membership\Data\SaleData;
 use App\Modules\Scheduling\Actions\GenerateSessions;
 use App\Modules\Scheduling\Enums\Weekday;
+use App\Modules\Scheduling\Models\ClassSession;
 use App\Modules\Scheduling\Models\Schedule;
 use App\Shared\Credits;
 use Illuminate\Database\Seeder;
@@ -74,6 +78,29 @@ final class DatabaseSeeder extends Seeder
 
         foreach ($customers as $customerId) {
             $sell->handle(new SaleData($customerId, $ten->id, now()->toDateString(), PaymentMethod::Cash));
+        }
+
+        $this->bookings($customers->all());
+    }
+
+    /**
+     * A few bookings in the coming days so the calendar shows taken seats.
+     *
+     * @param  array<int, int>  $customerIds
+     */
+    private function bookings(array $customerIds): void
+    {
+        $book = app(BookSession::class);
+        $sessions = ClassSession::query()->where('starts_at', '>', now()->addHours(4))->orderBy('starts_at')->limit(6)->get();
+
+        foreach ($sessions as $i => $session) {
+            foreach (array_slice($customerIds, $i, 3) as $customerId) {
+                try {
+                    $book->handle(new BookingRequest(user_id: $customerId, session_id: $session->id));
+                } catch (BookingRejected) {
+                    // daily limit or full: fine for demo data
+                }
+            }
         }
     }
 

@@ -59,6 +59,12 @@ final class BookingPolicySettings extends Settings
 
     public bool $no_show_refunds_credit;
 
+    /**
+     * When false (phase 1, no check-in at the door), finished sessions close their bookings
+     * as attended. When true, bookings without check-in become no_show.
+     */
+    public bool $checkin_required;
+
     /** @var list<int> */
     public array $reminder_hours_before;
 

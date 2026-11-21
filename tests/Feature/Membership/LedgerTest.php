@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Modules\Booking\Models\Booking;
 use App\Modules\Membership\Contracts\CreditLedger;
 use App\Modules\Membership\Enums\TransactionType;
 use App\Modules\Membership\Exceptions\LedgerRejected;
@@ -28,22 +29,25 @@ it('starts with the purchased credits', function (): void {
 it('debits and refunds through the public contract', function (): void {
     $membership = soldMembership();
     $contract = app(CreditLedger::class);
+    $bookingId = Booking::factory()->create()->id;
 
-    DB::transaction(function () use ($contract, $membership): void {
-        expect($contract->debit($membership->id, Credits::of('1.5'), bookingId: 77)->toDecimal())->toBe('8.50')
-            ->and($contract->refund($membership->id, Credits::of('1.5'), bookingId: 77)->toDecimal())->toBe('10.00');
+    DB::transaction(function () use ($contract, $membership, $bookingId): void {
+        expect($contract->debit($membership->id, Credits::of('1.5'), bookingId: $bookingId)->toDecimal())->toBe('8.50')
+            ->and($contract->refund($membership->id, Credits::of('1.5'), bookingId: $bookingId)->toDecimal())->toBe('10.00');
     });
 
     $entries = CreditTransaction::query()->orderBy('id')->get();
     expect($entries->pluck('type')->all())->toBe([TransactionType::Purchase, TransactionType::Debit, TransactionType::Refund])
         ->and($entries[1]->amount->toDecimal())->toBe('-1.50')
-        ->and($entries[1]->booking_id)->toBe(77);
+        ->and($entries[1]->booking_id)->toBe($bookingId);
 });
 
 it('never lets the balance go below zero', function (): void {
     $membership = soldMembership(package: ['credits' => Credits::of(1)]);
 
-    DB::transaction(fn (): Credits => ledger()->debit($membership->id, Credits::of('1.5'), bookingId: 1));
+    $bookingId = Booking::factory()->create()->id;
+
+    DB::transaction(fn (): Credits => ledger()->debit($membership->id, Credits::of('1.5'), bookingId: $bookingId));
 })->throws(LedgerRejected::class, 'membership.errors.insufficient_credits');
 
 it('rejects entries with the wrong sign or no amount', function (TransactionType $type, string $amount, string $error): void {
@@ -97,7 +101,7 @@ it('keeps the ledger invariant under random movements', function (int $seed): vo
         $halves = mt_rand(1, 6) * ($type->sign() === 0 ? (mt_rand(0, 1) === 1 ? 1 : -1) : $type->sign());
 
         try {
-            DB::transaction(fn (): CreditTransaction => ledger()->record($membership->id, $type, Credits::fromHalves($halves), "step {$step}", $step));
+            DB::transaction(fn (): CreditTransaction => ledger()->record($membership->id, $type, Credits::fromHalves($halves), "step {$step}"));
         } catch (LedgerRejected) {
             // Rejected movements (insufficient credits) must leave no trace.
         }

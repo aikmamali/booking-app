@@ -32,6 +32,7 @@ return [
         'upcoming' => 'From today on',
     ],
     'actions' => [
+        'participants' => 'Participants',
         'save' => 'Save',
         'confirm_cancel' => 'Cancel class',
         'change' => 'Change',

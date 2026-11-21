@@ -71,7 +71,15 @@ final class ClassSessionResource extends Resource
                     ->description(fn (ClassSession $record): ?string => $record->cancel_reason),
             ])
             ->filters(self::filters())
-            ->actions([self::changeAction($tz), self::cancelAction()]);
+            ->actions([
+                // Participants live in the Booking module's resource; linked by route name only.
+                Action::make('participants')->label(__('scheduling.actions.participants'))->icon('heroicon-o-users')
+                    ->url(fn (ClassSession $record): string => route('filament.admin.resources.bookings.index', [
+                        'tableFilters' => ['session' => ['session' => $record->public_id]],
+                    ])),
+                self::changeAction($tz),
+                self::cancelAction(),
+            ]);
     }
 
     public static function getPages(): array
