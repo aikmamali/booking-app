@@ -14,7 +14,7 @@ final class InvitationNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(public readonly string $token)
+    public function __construct(public string $token)
     {
         $this->afterCommit();
     }

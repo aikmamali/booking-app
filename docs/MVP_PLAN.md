@@ -34,17 +34,17 @@
 - [x] Test: ledger invariant
 
 ## 4. Booking (BK-01, BK-02, BK-04 έως BK-09)
-- [ ] Enum `BookingStatus` με transitions (ενότητα 7.1)
-- [ ] `BookingRule` + `BookingRuleChain` και οι 6 κανόνες της ενότητας 4
-- [ ] `BookSession` με `lockForUpdate` και unique index ενεργών κρατήσεων
-- [ ] `CancelBooking` (εντός και εκτός ορίου), `RescheduleBooking` (ατομική συναλλαγή)
-- [ ] Κράτηση και ακύρωση από προσωπικό με override και audit
-- [ ] Παρουσία / no-show, `MarkNoShows`
-- [ ] Ακύρωση session → refund σε όλους
-- [ ] Customer UI: υπηρεσία → μηνιαίο ημερολόγιο → ώρες με διαθέσιμες θέσεις και λίστα αναμονής → επιβεβαίωση
-- [ ] «Τα ραντεβού μου»: Upcoming, Μήνας, Εβδομάδα, Ιστορικό, λεπτομέρειες, .ics
-- [ ] `SendBookingReminders`
-- [ ] Test: δύο ταυτόχρονες κρατήσεις για την τελευταία θέση
+- [x] Enum `BookingStatus` με transitions (ενότητα 7.1)
+- [x] `BookingRule` + `BookingRuleChain` και οι 6 κανόνες της ενότητας 4
+- [x] `BookSession` με `lockForUpdate` και unique index ενεργών κρατήσεων
+- [x] `CancelBooking` (εντός και εκτός ορίου), `RescheduleBooking` (ατομική συναλλαγή)
+- [x] Κράτηση και ακύρωση από προσωπικό με override και audit
+- [x] Παρουσία / no-show, `MarkNoShows` (χωρίς check-in: αυτόματα attended, ADR 0005)
+- [x] Ακύρωση session → refund σε όλους
+- [x] Customer UI: υπηρεσία → μηνιαίο ημερολόγιο → ώρες με διαθέσιμες θέσεις → επιβεβαίωση (μέγεθος λίστας αναμονής στο βήμα 5)
+- [x] «Τα ραντεβού μου»: Upcoming, Μήνας, Εβδομάδα, Ιστορικό, λεπτομέρειες, .ics
+- [x] `SendBookingReminders`
+- [x] Test: δύο ταυτόχρονες κρατήσεις για την τελευταία θέση
 
 ## 5. Waitlist (WL-01 έως WL-03)
 - [ ] Είσοδος και έξοδος από λίστα αναμονής, θέση στην ουρά

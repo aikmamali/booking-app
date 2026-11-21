@@ -32,6 +32,7 @@ return [
         'upcoming' => 'Από σήμερα και μετά',
     ],
     'actions' => [
+        'participants' => 'Συμμετέχοντες',
         'save' => 'Αποθήκευση',
         'confirm_cancel' => 'Ακύρωση μαθήματος',
         'change' => 'Αλλαγή',

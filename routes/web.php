@@ -3,6 +3,10 @@
 declare(strict_types=1);
 
 use App\Livewire\Home;
+use App\Modules\Booking\Http\Controllers\DownloadBookingCalendar;
+use App\Modules\Booking\Livewire\BookClass;
+use App\Modules\Booking\Livewire\BookingDetails;
+use App\Modules\Booking\Livewire\MyBookings;
 use App\Modules\Identity\Http\Controllers\LogoutController;
 use App\Modules\Identity\Http\Controllers\VerifyEmailController;
 use App\Modules\Identity\Livewire\AcceptInvitation;
@@ -42,6 +46,10 @@ Route::prefix('app')->group(function (): void {
             Route::get('/', Home::class)->name('app.home');
             Route::get('profile', Profile::class)->name('app.profile');
             Route::get('membership', MyMemberships::class)->name('app.membership');
+            Route::get('book', BookClass::class)->name('app.book');
+            Route::get('bookings', MyBookings::class)->name('app.bookings');
+            Route::get('bookings/{booking}', BookingDetails::class)->name('app.bookings.show');
+            Route::get('bookings/{booking}/calendar.ics', DownloadBookingCalendar::class)->name('app.bookings.ics');
         });
     });
 });

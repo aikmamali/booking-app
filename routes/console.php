@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Modules\Booking\Jobs\CloseFinishedSessionsJob;
+use App\Modules\Booking\Jobs\SendBookingRemindersJob;
 use App\Modules\Membership\Jobs\ExpireMembershipsJob;
 use App\Modules\Membership\Jobs\WarnExpiringMembershipsJob;
 use App\Modules\Scheduling\Jobs\GenerateSessionsJob;
@@ -29,3 +31,14 @@ Schedule::job(new WarnExpiringMembershipsJob)
     ->timezone('Europe/Athens')
     ->withoutOverlapping()
     ->name('warn-expiring-memberships');
+
+Schedule::job(new SendBookingRemindersJob)
+    ->everyFiveMinutes()
+    ->withoutOverlapping()
+    ->name('send-booking-reminders');
+
+// "MarkNoShows" in spec section 8: closes the bookings of finished sessions.
+Schedule::job(new CloseFinishedSessionsJob)
+    ->everyFifteenMinutes()
+    ->withoutOverlapping()
+    ->name('mark-no-shows');
