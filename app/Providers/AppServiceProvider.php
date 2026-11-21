@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Livewire\ModuleComponents;
 use App\Shared\Clock;
 use App\Shared\SystemClock;
 use Carbon\CarbonImmutable;
@@ -21,6 +22,8 @@ final class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Date::use(CarbonImmutable::class);
+
+        ModuleComponents::register();
 
         Model::preventLazyLoading(! $this->app->isProduction());
         Model::preventSilentlyDiscardingAttributes(! $this->app->isProduction());

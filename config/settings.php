@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\Booking\Settings\BookingPolicySettings;
+use App\Modules\Identity\Settings\IdentitySettings;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelSettings\SettingsCasts\DataCast;
 use Spatie\LaravelSettings\SettingsCasts\DateTimeInterfaceCast;
@@ -18,6 +19,7 @@ return [
      */
     'settings' => [
         BookingPolicySettings::class,
+        IdentitySettings::class,
     ],
 
     /*
