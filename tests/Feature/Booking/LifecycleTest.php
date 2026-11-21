@@ -9,8 +9,7 @@ use App\Modules\Booking\Enums\BookingStatus;
 use App\Modules\Booking\Exceptions\BookingRejected;
 use App\Modules\Booking\Models\Booking;
 use App\Modules\Booking\Settings\BookingPolicySettings;
-use App\Modules\Communication\Notifications\BookingCancelledNotification;
-use App\Modules\Communication\Notifications\BookingReminderNotification;
+use App\Modules\Communication\Enums\NotificationType;
 use App\Modules\Identity\Actions\DeleteAccount;
 use App\Modules\Scheduling\Actions\CancelSession;
 use Illuminate\Console\Scheduling\Schedule;
@@ -89,7 +88,8 @@ it('cancels and refunds every booking when the business cancels the session', fu
         ->and($this->booking->fresh()?->cancel_reason)->toBe('Ασθένεια εκπαιδευτή')
         ->and(creditsOf($this->customer))->toBe('10.00')
         ->and(creditsOf($other))->toBe('10.00');
-    Notification::assertSentTo([$this->customer, $other], BookingCancelledNotification::class);
+    assertNotified($this->customer, NotificationType::SessionCancelled);
+    assertNotified($other, NotificationType::SessionCancelled);
 });
 
 it('cancels future bookings, with refund, when the customer deletes their account', function (): void {
@@ -114,7 +114,7 @@ describe('reminders', function (): void {
             ->and($send('2027-03-22 20:00:00'))->toBe(0)
             ->and($send('2027-03-23 14:30:00'))->toBe(1)
             ->and($send('2027-03-23 15:00:00'))->toBe(0);
-        Notification::assertSentToTimes($this->customer, BookingReminderNotification::class, 2);
+        assertNotified($this->customer, NotificationType::BookingReminder, 2);
     });
 
     it('skips the reminders whose moment had passed when the booking was made', function (): void {
@@ -126,7 +126,7 @@ describe('reminders', function (): void {
         expect(app(SendBookingReminders::class)->handle())->toBe(0);
         $this->travelTo('2027-03-23 14:31:00');
         expect(app(SendBookingReminders::class)->handle())->toBe(1);
-        Notification::assertSentTo($late->user, BookingReminderNotification::class);
+        assertNotified($late->user, NotificationType::BookingReminder);
     });
 
     it('respects the opt-out and cancelled bookings', function (): void {

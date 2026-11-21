@@ -8,7 +8,8 @@ use App\Modules\Booking\Events\BookingConfirmed;
 use App\Modules\Booking\Exceptions\BookingRejected;
 use App\Modules\Booking\Models\Booking;
 use App\Modules\Booking\Settings\BookingPolicySettings;
-use App\Modules\Communication\Notifications\BookingConfirmedNotification;
+use App\Modules\Communication\Enums\NotificationType;
+use App\Modules\Communication\Notifications\CustomerNotification;
 use App\Modules\Identity\Models\User;
 use App\Modules\Membership\Enums\TransactionType;
 use App\Modules\Membership\Models\CreditTransaction;
@@ -43,12 +44,12 @@ it('books a seat, charges the membership and emails a confirmation with an .ics 
         ->and($debit->booking_id)->toBe($booking->id)
         ->and(creditsOf($customer))->toBe('9.00');
 
-    Notification::assertSentTo($customer, BookingConfirmedNotification::class, function (BookingConfirmedNotification $n) use ($customer): bool {
+    assertNotified($customer, NotificationType::BookingConfirmed, check: function (CustomerNotification $n) use ($customer): bool {
         $mail = $n->toMail($customer);
 
-        return str_contains($n->booking->ics, 'DTSTART:20270323T163000Z')
+        return str_contains((string) $n->ics, 'DTSTART:20270323T163000Z')
             && $mail->rawAttachments !== []
-            && str_contains((string) $mail->subject, 'Τρίτη 23/03/2027 18:30');
+            && $mail->subject === 'Επιβεβαίωση κράτησης: Group Training, Τρίτη 23/03/2027 18:30';
     });
 });
 

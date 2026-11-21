@@ -4,6 +4,22 @@
         <p class="mt-2 text-gray-600">{{ __('app.home.intro') }}</p>
     </div>
     <x-status />
+
+    @if ($announcements !== [])
+        <div aria-label="{{ __('communication.announcements.title') }}" role="region" class="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2">
+            @foreach ($announcements as $announcement)
+                <article class="w-72 shrink-0 snap-start overflow-hidden rounded-md border border-gray-200 bg-white">
+                    @if ($announcement['image_url'])
+                        <img src="{{ $announcement['image_url'] }}" alt="" class="h-32 w-full object-cover">
+                    @endif
+                    <div class="p-3">
+                        <h2 class="font-semibold">{{ $announcement['title'] }}</h2>
+                        @if ($announcement['body'])<p class="mt-1 text-sm text-gray-700">{{ $announcement['body'] }}</p>@endif
+                    </div>
+                </article>
+            @endforeach
+        </div>
+    @endif
     <a href="{{ route('app.book') }}" class="inline-block rounded-md bg-teal-700 px-4 py-2 font-semibold text-white">{{ __('booking.book.title') }}</a>
 
     <div>
