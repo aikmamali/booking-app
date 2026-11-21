@@ -125,6 +125,7 @@ return [
         'symbols' => 'Το πεδίο :attribute πρέπει να περιέχει τουλάχιστον ένα σύμβολο.',
         'uncompromised' => 'Το :attribute έχει εμφανιστεί σε διαρροή δεδομένων. Επίλεξε διαφορετικό :attribute.',
     ],
+    'phone' => 'Το πεδίο :attribute πρέπει να είναι έγκυρος αριθμός τηλεφώνου.',
     'present' => 'Το πεδίο :attribute πρέπει να υπάρχει.',
     'present_if' => 'Το πεδίο :attribute πρέπει να υπάρχει όταν το :other είναι :value.',
     'present_unless' => 'Το πεδίο :attribute πρέπει να υπάρχει εκτός αν το :other είναι :value.',
@@ -176,7 +177,14 @@ return [
         'password_confirmation' => 'επιβεβαίωση κωδικού',
         'first_name' => 'όνομα',
         'last_name' => 'επώνυμο',
-        'phone' => 'τηλέφωνο',
+        'phone' => 'κινητό',
+        'phone_alt' => 'δεύτερο τηλέφωνο',
+        'vat_number' => 'ΑΦΜ',
+        'locale' => 'γλώσσα',
+        'accept_terms' => 'αποδοχή όρων',
+        'current_password' => 'τρέχων κωδικός',
+        'confirm' => 'επιβεβαίωση',
+        'role' => 'ρόλος',
     ],
 
 ];

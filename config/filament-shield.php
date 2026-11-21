@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Models\User;
+use App\Modules\Identity\Models\User;
 
 return [
     'shield_resource' => [
@@ -26,13 +26,13 @@ return [
 
     'super_admin' => [
         'enabled' => true,
-        'name' => 'super_admin',
-        'define_via_gate' => false,
+        'name' => 'admin',
+        'define_via_gate' => true,
         'intercept_gate' => 'before', // after
     ],
 
     'panel_user' => [
-        'enabled' => true,
+        'enabled' => false,
         'name' => 'panel_user',
     ],
 

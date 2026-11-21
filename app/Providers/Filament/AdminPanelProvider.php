@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Providers\Filament;
 
+use App\Modules\Identity\Http\Middleware\ApplySessionLifetime;
+use App\Modules\Identity\Http\Middleware\SetLocale;
 use App\Shared\Modules;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -47,6 +49,7 @@ final class AdminPanelProvider extends PanelProvider
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
+                ApplySessionLifetime::class,
                 StartSession::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
@@ -57,6 +60,7 @@ final class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                SetLocale::class,
             ]);
 
         return $this->discoverModuleComponents($panel);

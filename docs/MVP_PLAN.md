@@ -12,11 +12,11 @@
 - [x] GitHub Actions: Pint check → PHPStan → Pest (MySQL service)
 
 ## 1. Identity (ID-01 έως ID-06)
-- [ ] Εγγραφή με επιβεβαίωση email, αποδοχή όρων με έκδοση και ώρα
-- [ ] Login, logout, reset password, αλλαγή κωδικού, session lifetime από settings
-- [ ] Προφίλ πελάτη, διαγραφή λογαριασμού (ανωνυμοποίηση)
-- [ ] Ρόλοι customer / instructor / reception / admin με Policies. Δημιουργία πελάτη από admin με πρόσκληση
-- [ ] `checkin_token` ανά χρήστη
+- [x] Εγγραφή με επιβεβαίωση email, αποδοχή όρων με έκδοση και ώρα
+- [x] Login, logout, reset password, αλλαγή κωδικού, session lifetime από settings
+- [x] Προφίλ πελάτη, διαγραφή λογαριασμού (ανωνυμοποίηση)
+- [x] Ρόλοι customer / instructor / admin με Policies (reception αργότερα, βλ. ADR 0002). Δημιουργία πελάτη από admin με πρόσκληση
+- [x] `checkin_token` ανά χρήστη
 
 ## 2. Catalog και Scheduling (SC-01 έως SC-04)
 - [ ] Κατηγορίες, υπηρεσίες (duration, capacity, credit_cost, policy_overrides) στο Filament

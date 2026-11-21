@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Models\User;
+use App\Modules\Identity\Models\User;
 
 return [
 
@@ -99,6 +99,14 @@ return [
             'provider' => 'users',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
+            'throttle' => 60,
+        ],
+
+        // Staff-created accounts set their first password through an invitation link (ID-05).
+        'invitations' => [
+            'provider' => 'users',
+            'table' => 'invitation_tokens',
+            'expire' => 60 * 24 * 7,
             'throttle' => 60,
         ],
     ],
