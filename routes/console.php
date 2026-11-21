@@ -2,9 +2,16 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use App\Modules\Scheduling\Jobs\GenerateSessionsJob;
+use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function (): void {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+/*
+| Periodic jobs (spec section 8). Run by one cron entry: `* * * * * php artisan schedule:run`.
+| Every job is idempotent and must not overlap itself.
+*/
+
+Schedule::job(new GenerateSessionsJob)
+    ->dailyAt('02:00')
+    ->timezone('Europe/Athens')
+    ->withoutOverlapping()
+    ->name('generate-sessions');

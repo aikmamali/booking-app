@@ -19,10 +19,10 @@
 - [x] `checkin_token` ανά χρήστη
 
 ## 2. Catalog και Scheduling (SC-01 έως SC-04)
-- [ ] Κατηγορίες, υπηρεσίες (duration, capacity, credit_cost, policy_overrides) στο Filament
-- [ ] Schedules, closures, `class_sessions`
-- [ ] `GenerateSessions` job (idempotent, παραλείπει αργίες)
-- [ ] Αλλαγή και ακύρωση session (το refund των κρατήσεων έρχεται στο βήμα 4)
+- [x] Κατηγορίες, υπηρεσίες (duration, capacity, credit_cost, policy_overrides) στο Filament
+- [x] Schedules, closures, `class_sessions`
+- [x] `GenerateSessions` job (idempotent, παραλείπει αργίες)
+- [x] Αλλαγή και ακύρωση session (το refund των κρατήσεων έρχεται στο βήμα 4)
 
 ## 3. Membership (MB-01, MB-02, MB-04, MB-05, MB-07)
 - [ ] Packages + pivot υπηρεσιών

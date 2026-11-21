@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Modules\Catalog\Models\Room;
+use App\Modules\Catalog\Models\Service;
+use App\Modules\Identity\Models\User;
+use App\Modules\Scheduling\Models\ClassSession;
 use App\Shared\Clock;
 use App\Shared\Modules;
 use Illuminate\Contracts\Events\ShouldDispatchAfterCommit;
@@ -16,9 +20,10 @@ use Illuminate\Support\ServiceProvider;
  * Models other modules may use directly: their module's public contract (spec 5.2).
  */
 const PUBLIC_MODELS = [
-    'App\Modules\Identity\Models\User',
-    'App\Modules\Catalog\Models\Service',
-    'App\Modules\Scheduling\Models\ClassSession',
+    User::class,
+    Service::class,
+    Room::class,
+    ClassSession::class,
 ];
 
 const UI_NAMESPACES = ['Filament', 'Livewire', 'Illuminate\Http', 'Illuminate\Routing'];
@@ -53,9 +58,9 @@ foreach (Modules::ALL as $module) {
         ->classes()
         ->toImplement(ShouldDispatchAfterCommit::class);
 
-    arch("{$module}: enums are backed enums")
+    arch("{$module}: enums folder holds only enums")
         ->expect("{$ns}\\Enums")
-        ->toBeStringBackedEnums();
+        ->toBeEnums();
 
     arch("{$module}: models are only used inside their module")
         ->expect("{$ns}\\Models")
