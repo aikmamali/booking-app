@@ -21,6 +21,8 @@ final readonly class EffectivePolicy
         public int $closesMinutesBefore,
         public int $maxBookingsPerDay,
         public ?int $maxActiveBookings,
+        public bool $waitlistEnabled = true,
+        public int $waitlistMaxSize = 5,
     ) {}
 
     public static function for(Service $service, BookingPolicySettings $settings): self
@@ -35,6 +37,8 @@ final readonly class EffectivePolicy
             closesMinutesBefore: $o->booking_closes_minutes_before ?? $settings->booking_closes_minutes_before,
             maxBookingsPerDay: $settings->max_bookings_per_day,
             maxActiveBookings: $settings->max_active_bookings,
+            waitlistEnabled: $o->waitlist_enabled ?? $settings->waitlist_enabled,
+            waitlistMaxSize: $o->waitlist_max_size ?? $settings->waitlist_max_size,
         );
     }
 }

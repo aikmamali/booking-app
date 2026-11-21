@@ -6,13 +6,18 @@ namespace App\Modules\Communication\Listeners;
 
 use App\Modules\Booking\Contracts\BookingSummaries;
 use App\Modules\Booking\Contracts\BookingSummary;
+use App\Modules\Booking\Contracts\WaitlistOfferSummary;
 use App\Modules\Booking\Events\BookingCancelled;
 use App\Modules\Booking\Events\BookingConfirmed;
 use App\Modules\Booking\Events\BookingReminderDue;
+use App\Modules\Booking\Events\WaitlistOffered;
+use App\Modules\Booking\Events\WaitlistPromoted;
 use App\Modules\Communication\Notifications\BookingCancelledNotification;
 use App\Modules\Communication\Notifications\BookingConfirmedNotification;
 use App\Modules\Communication\Notifications\BookingNotification;
 use App\Modules\Communication\Notifications\BookingReminderNotification;
+use App\Modules\Communication\Notifications\WaitlistOfferedNotification;
+use App\Modules\Communication\Notifications\WaitlistPromotedNotification;
 use App\Modules\Identity\Models\User;
 
 /**
@@ -36,6 +41,21 @@ final readonly class SendBookingEmails
     public function reminder(BookingReminderDue $event): void
     {
         $this->send($event->bookingId, BookingReminderNotification::class);
+    }
+
+    public function waitlistPromoted(WaitlistPromoted $event): void
+    {
+        $this->send($event->bookingId, WaitlistPromotedNotification::class);
+    }
+
+    public function waitlistOffered(WaitlistOffered $event): void
+    {
+        $offer = $this->bookings->waitlistOffer($event->entryId);
+        $user = $offer instanceof WaitlistOfferSummary ? User::query()->find($offer->userId) : null;
+
+        if ($offer instanceof WaitlistOfferSummary && $user !== null) {
+            $user->notify(new WaitlistOfferedNotification($offer));
+        }
     }
 
     /**

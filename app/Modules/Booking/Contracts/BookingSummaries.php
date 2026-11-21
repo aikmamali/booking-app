@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Booking\Contracts;
 
 use App\Modules\Booking\Models\Booking;
+use App\Modules\Booking\Models\WaitlistEntry;
 use App\Modules\Booking\Support\BookingCalendar;
 use Carbon\CarbonImmutable;
 
@@ -18,6 +19,17 @@ final class BookingSummaries
         $booking = Booking::query()->with(['session.service', 'session.instructor'])->find($bookingId);
 
         return $booking === null ? null : $this->summarise($booking);
+    }
+
+    public function waitlistOffer(int $entryId): ?WaitlistOfferSummary
+    {
+        $entry = WaitlistEntry::query()->with('session.service')->find($entryId);
+
+        if ($entry?->offered_until === null) {
+            return null;
+        }
+
+        return new WaitlistOfferSummary($entry->user_id, $entry->session->service->name, $entry->session->starts_at, $entry->offered_until);
     }
 
     /**

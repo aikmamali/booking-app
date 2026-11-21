@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace App\Modules\Booking\Livewire;
 
 use App\Modules\Booking\Actions\BookSession;
+use App\Modules\Booking\Actions\JoinWaitlist;
+use App\Modules\Booking\Actions\LeaveWaitlist;
 use App\Modules\Booking\Data\BookingRequest;
 use App\Modules\Booking\Exceptions\BookingRejected;
+use App\Modules\Booking\Models\WaitlistEntry;
 use App\Modules\Booking\Settings\BookingPolicySettings;
 use App\Modules\Booking\Support\Availability;
 use App\Modules\Booking\Support\EffectivePolicy;
@@ -70,6 +73,33 @@ final class BookClass extends Component
     {
         $this->sessionId = $publicId;
         $this->error = null;
+    }
+
+    public function joinWaitlist(string $publicId, JoinWaitlist $join): void
+    {
+        $session = ClassSession::query()->where('public_id', $publicId)->where('service_id', $this->serviceId)->first();
+
+        try {
+            $join->handle((int) auth()->id(), (int) $session?->id);
+        } catch (BookingRejected $e) {
+            $this->error = $e->translated();
+
+            return;
+        }
+
+        $this->error = null;
+        session()->flash('status', __('booking.waitlist.joined'));
+    }
+
+    public function leaveWaitlist(string $publicId, LeaveWaitlist $leave): void
+    {
+        $entry = WaitlistEntry::query()->live()->where('user_id', auth()->id())
+            ->whereHas('session', fn ($q) => $q->where('public_id', $publicId))->first();
+
+        if ($entry !== null) {
+            $leave->handle($entry);
+            session()->flash('status', __('booking.waitlist.left'));
+        }
     }
 
     public function back(): void
