@@ -102,6 +102,16 @@ return [
     'anonymized' => [
         'first_name' => 'Deleted user',
     ],
+    'card' => [
+        'nav' => 'Card',
+        'title' => 'My card',
+        'qr_label' => 'Check-in QR code',
+        'hint' => 'Show this code at the front desk when you arrive.',
+        'reissue' => 'Issue a new code',
+        'reissue_warning' => 'Your old code will stop working. Only continue if you think someone else has seen it.',
+        'reissue_confirm' => 'Issue a new code',
+        'reissued' => 'A new code was issued. The old one no longer works.',
+    ],
     'legal' => [
         'terms' => 'Terms of use',
         'privacy' => 'Privacy policy',

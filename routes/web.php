@@ -10,6 +10,7 @@ use App\Modules\Booking\Livewire\MyBookings;
 use App\Modules\Identity\Http\Controllers\LogoutController;
 use App\Modules\Identity\Http\Controllers\VerifyEmailController;
 use App\Modules\Identity\Livewire\AcceptInvitation;
+use App\Modules\Identity\Livewire\CheckinCard;
 use App\Modules\Identity\Livewire\ForgotPassword;
 use App\Modules\Identity\Livewire\Login;
 use App\Modules\Identity\Livewire\Profile;
@@ -45,6 +46,7 @@ Route::prefix('app')->group(function (): void {
         Route::middleware('verified')->group(function (): void {
             Route::get('/', Home::class)->name('app.home');
             Route::get('profile', Profile::class)->name('app.profile');
+            Route::get('card', CheckinCard::class)->name('app.card');
             Route::get('membership', MyMemberships::class)->name('app.membership');
             Route::get('book', BookClass::class)->name('app.book');
             Route::get('bookings', MyBookings::class)->name('app.bookings');
