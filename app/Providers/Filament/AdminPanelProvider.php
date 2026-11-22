@@ -16,7 +16,6 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -33,6 +32,8 @@ final class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            // Export completion notices (RP-02) arrive in the bell.
+            ->databaseNotifications()
             ->brandName(fn (): string => __('app.name'))
             ->colors([
                 'primary' => Color::Teal,
@@ -40,9 +41,7 @@ final class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->widgets([
-                AccountWidget::class,
-            ])
+            ->widgets([])
             ->plugins([
                 FilamentShieldPlugin::make(),
             ])
