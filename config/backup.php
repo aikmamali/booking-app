@@ -27,8 +27,9 @@ return [
                 /*
                  * The list of directories and files that will be included in the backup.
                  */
+                // Code lives in git; back up only what is not: uploaded images.
                 'include' => [
-                    base_path(),
+                    storage_path('app/public'),
                 ],
 
                 /*
@@ -163,8 +164,9 @@ return [
             /*
              * The disk names on which the backups will be stored.
              */
+            // An S3-compatible bucket in production (spec 11), local in development.
             'disks' => [
-                'local',
+                env('BACKUP_DISK', 'local'),
             ],
 
             /*
@@ -217,9 +219,9 @@ return [
             BackupHasFailedNotification::class => ['mail'],
             UnhealthyBackupWasFoundNotification::class => ['mail'],
             CleanupHasFailedNotification::class => ['mail'],
-            BackupWasSuccessfulNotification::class => ['mail'],
-            HealthyBackupWasFoundNotification::class => ['mail'],
-            CleanupWasSuccessfulNotification::class => ['mail'],
+            BackupWasSuccessfulNotification::class => [],
+            HealthyBackupWasFoundNotification::class => [],
+            CleanupWasSuccessfulNotification::class => [],
         ],
 
         /*
@@ -229,7 +231,8 @@ return [
         'notifiable' => Notifiable::class,
 
         'mail' => [
-            'to' => 'your@example.com',
+            // Empty or missing values fall back so the config stays valid (e.g. CI without a .env).
+            'to' => env('BACKUP_NOTIFICATION_EMAIL') ?: env('MAIL_FROM_ADDRESS') ?: 'hello@example.com',
 
             'from' => [
                 'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
@@ -273,7 +276,7 @@ return [
     'monitor_backups' => [
         [
             'name' => env('APP_NAME', 'laravel-backup'),
-            'disks' => ['local'],
+            'disks' => [env('BACKUP_DISK', 'local')],
             'health_checks' => [
                 MaximumAgeInDays::class => 1,
                 MaximumStorageInMegabytes::class => 5000,
@@ -308,33 +311,34 @@ return [
             /*
              * The number of days for which backups must be kept.
              */
-            'keep_all_backups_for_days' => 7,
+            // Spec 11: 30 daily and 12 monthly backups.
+            'keep_all_backups_for_days' => 30,
 
             /*
              * After the "keep_all_backups_for_days" period is over, the most recent backup
              * of that day will be kept. Older backups within the same day will be removed.
              * If you create backups only once a day, no backups will be removed yet.
              */
-            'keep_daily_backups_for_days' => 16,
+            'keep_daily_backups_for_days' => 30,
 
             /*
              * After the "keep_daily_backups_for_days" period is over, the most recent backup
              * of that week will be kept. Older backups within the same week will be removed.
              * If you create backups only once a week, no backups will be removed yet.
              */
-            'keep_weekly_backups_for_weeks' => 8,
+            'keep_weekly_backups_for_weeks' => 0,
 
             /*
              * After the "keep_weekly_backups_for_weeks" period is over, the most recent backup
              * of that month will be kept. Older backups within the same month will be removed.
              */
-            'keep_monthly_backups_for_months' => 4,
+            'keep_monthly_backups_for_months' => 12,
 
             /*
              * After the "keep_monthly_backups_for_months" period is over, the most recent backup
              * of that year will be kept. Older backups within the same year will be removed.
              */
-            'keep_yearly_backups_for_years' => 2,
+            'keep_yearly_backups_for_years' => 0,
 
             /*
              * After cleaning up the backups remove the oldest backup until

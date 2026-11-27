@@ -15,6 +15,8 @@
         "filament/filament": "^3.3",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "league/flysystem-aws-s3-v3": "^3.29",
+        "sentry/sentry-laravel": "^4.10",
         "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-backup": "^9.3",
         "spatie/laravel-data": "^4.15",
@@ -23,6 +25,7 @@
         "spatie/laravel-translatable": "^6.11"
     },
     "require-dev": {
+        "deployer/deployer": "^7.5",
         "fakerphp/faker": "^1.23",
         "larastan/larastan": "^3.4",
         "laravel/pail": "^1.2.2",
