@@ -67,7 +67,7 @@
 - [x] Εξαγωγή σε Excel (xlsx/csv, queued) στις κύριες λίστες: χρήστες, κρατήσεις, συνδρομές, πακέτα, εισπράξεις, μαθήματα, υπηρεσίες
 
 ## 10. Παράδοση
-- [ ] PWA: manifest, service worker, responsive από 360 px
-- [ ] Seeders με ρεαλιστικά demo δεδομένα
-- [ ] Deploy script (Deployer), backups (`spatie/laravel-backup`), uptime και error monitoring
+- [x] PWA: manifest, service worker, responsive από 360 px
+- [x] Seeders με ρεαλιστικά demo δεδομένα
+- [x] Deploy script (Deployer), backups (`spatie/laravel-backup`), uptime και error monitoring (οδηγός: `docs/DEPLOYMENT.md`)
 - [ ] Πιλοτική χρήση (Πύλη 1)

@@ -30,11 +30,11 @@
                 @endauth
             </div>
         </div>
-        <nav class="mx-auto flex max-w-3xl gap-1 overflow-x-auto px-2 pb-1 pt-2 text-sm" aria-label="{{ __('app.nav.label') }}">
+        <nav class="mx-auto flex max-w-3xl gap-0.5 overflow-x-auto px-2 pb-1 pt-2 text-sm sm:gap-1" aria-label="{{ __('app.nav.label') }}">
             @auth
                 @foreach ([['app.book', 'booking.book.nav'], ['app.bookings', 'booking.mine.nav'], ['app.membership', 'membership.mine.nav'], ['app.card', 'identity.card.nav'], ['app.profile', 'identity.profile.nav']] as [$route, $label])
                     <a href="{{ route($route) }}" @if (request()->routeIs($route, $route.'.*')) aria-current="page" @endif
-                        @class(['whitespace-nowrap rounded-md px-2 py-1', 'bg-teal-50 font-semibold text-teal-800' => request()->routeIs($route, $route.'.*'), 'text-gray-700' => ! request()->routeIs($route, $route.'.*')])>{{ __($label) }}</a>
+                        @class(['whitespace-nowrap rounded-md px-1 py-1 sm:px-2', 'bg-teal-50 font-semibold text-teal-800' => request()->routeIs($route, $route.'.*'), 'text-gray-700' => ! request()->routeIs($route, $route.'.*')])>{{ __($label) }}</a>
                 @endforeach
             @endauth
         </nav>

@@ -48,3 +48,8 @@ Schedule::job(new ExpireWaitlistOffersJob)
     ->everyMinute()
     ->withoutOverlapping()
     ->name('expire-waitlist-offers');
+
+// PruneAndBackup (spec 8): database and uploads to the backup disk, then retention cleanup.
+Schedule::command('backup:clean')->dailyAt('03:00')->timezone('Europe/Athens')->withoutOverlapping()->name('backup-clean');
+Schedule::command('backup:run')->dailyAt('03:10')->timezone('Europe/Athens')->withoutOverlapping()->name('backup-run');
+Schedule::command('backup:monitor')->dailyAt('09:00')->timezone('Europe/Athens')->name('backup-monitor');

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers\Filament;
 
+use App\Filament\Support\InitialsAvatarProvider;
 use App\Modules\Identity\Http\Middleware\ApplySessionLifetime;
 use App\Modules\Identity\Http\Middleware\SetLocale;
 use App\Shared\Modules;
@@ -34,6 +35,7 @@ final class AdminPanelProvider extends PanelProvider
             ->login()
             // Export completion notices (RP-02) arrive in the bell.
             ->databaseNotifications()
+            ->defaultAvatarProvider(InitialsAvatarProvider::class)
             ->brandName(fn (): string => __('app.name'))
             ->colors([
                 'primary' => Color::Teal,

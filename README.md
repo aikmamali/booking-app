@@ -24,6 +24,10 @@ docker run --rm -v "$(pwd)":/opt -w /opt laravelsail/php83-composer:latest compo
 
 App: http://localhost/app · Admin: http://localhost/admin · Mailpit: http://localhost:8025
 
+## Production
+
+See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) (Greek): server setup, queue worker, scheduler, zero-downtime deploys with Deployer, backups, monitoring.
+
 ## Quality gates
 
 Each step of the MVP plan ends with all three green (CI runs them in this order):
