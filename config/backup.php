@@ -231,8 +231,8 @@ return [
         'notifiable' => Notifiable::class,
 
         'mail' => [
-            // Fall back like config/mail.php so the config stays valid without a .env (e.g. composer install in CI).
-            'to' => env('BACKUP_NOTIFICATION_EMAIL', env('MAIL_FROM_ADDRESS', 'hello@example.com')),
+            // Empty or missing values fall back so the config stays valid (e.g. CI without a .env).
+            'to' => env('BACKUP_NOTIFICATION_EMAIL') ?: env('MAIL_FROM_ADDRESS') ?: 'hello@example.com',
 
             'from' => [
                 'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
