@@ -27,9 +27,11 @@ return [
                 /*
                  * The list of directories and files that will be included in the backup.
                  */
-                // Code lives in git; back up only what is not: uploaded images.
+                // Code lives in git; back up only what is not: public uploads (images) and
+                // private ones (expense receipts, BL-02). Both folders always exist.
                 'include' => [
                     storage_path('app/public'),
+                    storage_path('app/private'),
                 ],
 
                 /*
@@ -40,6 +42,9 @@ return [
                 'exclude' => [
                     base_path('vendor'),
                     base_path('node_modules'),
+                    // Temporary uploads and generated exports can be recreated.
+                    storage_path('app/private/livewire-tmp'),
+                    storage_path('app/private/filament_exports'),
                 ],
 
                 /*

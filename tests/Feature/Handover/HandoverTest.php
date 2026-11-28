@@ -98,7 +98,7 @@ it('backs up every night and keeps 30 daily and 12 monthly copies', function ():
         ->and($events['backup-monitor']->expression)->toBe('0 9 * * *')
         ->and(config('backup.cleanup.default_strategy.keep_daily_backups_for_days'))->toBe(30)
         ->and(config('backup.cleanup.default_strategy.keep_monthly_backups_for_months'))->toBe(12)
-        ->and(config('backup.backup.source.files.include'))->toBe([storage_path('app/public')]);
+        ->and(config('backup.backup.source.files.include'))->toBe([storage_path('app/public'), storage_path('app/private')]);
 });
 
 it('renders the customer area without horizontal scrolling markup issues', function (): void {
