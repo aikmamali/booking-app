@@ -147,4 +147,13 @@ return [
         'fixed_seat' => 'Fixed seat',
         'waitlist' => 'Waitlist',
     ],
+    'bulk' => [
+        'action' => 'Bulk booking',
+        'description' => 'Every customer is booked into every class you choose, with the same rules and credit charge as a normal booking. Anything that fails (e.g. a full class, no credits) is reported separately. Up to :max pairs at a time.',
+        'customers' => 'Customers',
+        'sessions' => 'Classes',
+        'result' => ':booked bookings made, :failed failed.',
+        'empty' => 'Choose at least one customer and one class.',
+        'too_many' => 'Too many pairs. The limit is :max at a time.',
+    ],
 ];

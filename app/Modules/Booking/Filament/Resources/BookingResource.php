@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Modules\Booking\Filament\Resources;
 
 use App\Filament\Support\Rejections;
+use App\Modules\Booking\Actions\BookInBulk;
 use App\Modules\Booking\Actions\BookSession;
 use App\Modules\Booking\Actions\CancelBooking;
 use App\Modules\Booking\Actions\MarkAttendance;
 use App\Modules\Booking\Data\BookingRequest;
+use App\Modules\Booking\Data\BulkBookingRow;
 use App\Modules\Booking\Data\CancellationRequest;
 use App\Modules\Booking\Enums\BookingSource;
 use App\Modules\Booking\Enums\BookingStatus;
@@ -132,6 +134,56 @@ final class BookingResource extends Resource
 
                 Notification::make()->success()->title(__('booking.notices.booked'))->send();
             });
+    }
+
+    /**
+     * BK-10: customers × sessions in one step, with a per-row report of what failed.
+     */
+    public static function bulkBookAction(): Action
+    {
+        return Action::make('bulkBook')->label(__('booking.bulk.action'))->icon('heroicon-o-user-group')
+            ->authorize(fn (): bool => auth()->user()?->can('create', Booking::class) ?? false)
+            ->modalDescription(__('booking.bulk.description', ['max' => BookInBulk::MAX_PAIRS]))
+            ->form([
+                Select::make('user_ids')->label(__('booking.bulk.customers'))->required()->multiple()->searchable()
+                    ->getSearchResultsUsing(fn (string $search): array => self::customers($search))
+                    ->getOptionLabelsUsing(fn (array $values): array => User::query()->whereKey($values)->get()
+                        ->mapWithKeys(fn (User $u): array => [$u->id => $u->fullName()])->all()),
+                Select::make('session_ids')->label(__('booking.bulk.sessions'))->required()->multiple()->searchable()
+                    ->options(fn (): array => self::upcomingSessions()),
+                TextInput::make('override_reason')->label(__('booking.fields.override_reason'))->maxLength(255)
+                    ->helperText(__('booking.admin.override_hint')),
+            ])
+            ->action(function (array $data, Action $action): void {
+                $rows = Rejections::run(fn (): array => app(BookInBulk::class)->handle(
+                    array_values(array_map(intval(...), (array) $data['user_ids'])),
+                    array_values(array_map(intval(...), (array) $data['session_ids'])),
+                    (int) auth()->id(),
+                    filled($data['override_reason'] ?? null) ? (string) $data['override_reason'] : null,
+                ), $action);
+
+                self::reportBulk($rows);
+            });
+    }
+
+    /**
+     * @param  list<BulkBookingRow>  $rows
+     */
+    private static function reportBulk(array $rows): void
+    {
+        $failed = array_values(array_filter($rows, fn (BulkBookingRow $r): bool => ! $r->succeeded()));
+        $names = User::query()->whereKey(array_map(fn (BulkBookingRow $r): int => $r->userId, $failed))->get()
+            ->mapWithKeys(fn (User $u): array => [$u->id => $u->fullName()]);
+        $sessions = self::upcomingSessions();
+
+        $lines = array_map(fn (BulkBookingRow $r): string => e(($names[$r->userId] ?? '?').' · '.($sessions[$r->sessionId] ?? '#'.$r->sessionId).': '.$r->error), $failed);
+
+        Notification::make()
+            ->status($failed === [] ? 'success' : 'warning')
+            ->title(__('booking.bulk.result', ['booked' => count($rows) - count($failed), 'failed' => count($failed)]))
+            ->body(implode('<br>', $lines))
+            ->persistent()
+            ->send();
     }
 
     private static function cancelAction(): TableAction
