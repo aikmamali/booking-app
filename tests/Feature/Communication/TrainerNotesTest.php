@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Modules\Scheduling\Models\ClassSession;
 use App\Modules\Booking\Actions\CancelBooking;
 use App\Modules\Booking\Contracts\InstructorRoster;
 use App\Modules\Booking\Data\CancellationRequest;
@@ -14,6 +13,7 @@ use App\Modules\Communication\Filament\Pages\MyClasses;
 use App\Modules\Communication\Filament\Resources\NoteResource\Pages\ManageNotes;
 use App\Modules\Communication\Models\Note;
 use App\Modules\Identity\Models\User;
+use App\Modules\Scheduling\Models\ClassSession;
 use Livewire\Livewire;
 
 beforeEach(function (): void {
