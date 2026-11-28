@@ -121,4 +121,5 @@ it('runs the membership jobs at the times of spec section 8', function (string $
 })->with([
     ['expire-memberships', '10 0 * * *'],
     ['warn-expiring-memberships', '0 10 * * *'],
+    ['resume-frozen-memberships', '5 0 * * *'],
 ]);

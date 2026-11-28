@@ -9,6 +9,9 @@ use App\Modules\Billing\Enums\PaymentMethod;
 use App\Modules\Identity\Enums\Role;
 use App\Modules\Identity\Models\User;
 use App\Modules\Membership\Actions\AdjustCredits;
+use App\Modules\Membership\Actions\ExtendMembership;
+use App\Modules\Membership\Actions\FreezeMembership;
+use App\Modules\Membership\Actions\ResumeMembership;
 use App\Modules\Membership\Actions\SellPackage;
 use App\Modules\Membership\Data\SaleData;
 use App\Modules\Membership\Enums\MembershipStatus;
@@ -21,6 +24,7 @@ use App\Modules\Membership\Models\Package;
 use App\Shared\BusinessTime;
 use App\Shared\Credits;
 use App\View\Format;
+use Carbon\CarbonImmutable;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -31,6 +35,7 @@ use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action as TableAction;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -93,7 +98,7 @@ final class MembershipResource extends Resource
                 SelectFilter::make('status')->label(__('membership.fields.status'))->options(MembershipStatus::options())
                     ->default(MembershipStatus::Active->value),
             ])
-            ->actions([ViewAction::make(), self::adjustAction()]);
+            ->actions([ViewAction::make(), ActionGroup::make([self::adjustAction(), ...self::periodActions()])]);
     }
 
     public static function infolist(Infolist $infolist): Infolist
@@ -107,6 +112,8 @@ final class MembershipResource extends Resource
                     ->formatStateUsing(fn (MembershipStatus $state): string => $state->label()),
                 TextEntry::make('starts_on')->label(__('membership.fields.starts_on'))->date('d/m/Y'),
                 TextEntry::make('ends_on')->label(__('membership.fields.ends_on'))->date('d/m/Y'),
+                TextEntry::make('frozen_until')->label(__('membership.fields.frozen_until'))->date('d/m/Y')
+                    ->visible(fn (Membership $record): bool => $record->status === MembershipStatus::Frozen),
                 TextEntry::make('balance')->label(__('membership.fields.balance'))
                     ->formatStateUsing(fn (?string $state): string => Format::credits(Credits::of($state ?? '0'))),
             ]),
@@ -173,6 +180,56 @@ final class MembershipResource extends Resource
 
                 Notification::make()->success()->title(__('membership.notices.adjusted'))->send();
             });
+    }
+
+    /**
+     * MB-06: freeze, resume and extend.
+     *
+     * @return list<TableAction>
+     */
+    public static function periodActions(): array
+    {
+        $can = fn (Membership $record): bool => auth()->user()?->can('update', $record) ?? false;
+        $actorId = fn (): ?int => auth()->id() === null ? null : (int) auth()->id();
+
+        return [
+            TableAction::make('freeze')->label(__('membership.actions.freeze'))->icon('heroicon-o-pause-circle')
+                ->visible(fn (Membership $record): bool => $record->status === MembershipStatus::Active)
+                ->authorize($can)
+                ->modalDescription(__('membership.hints.freeze'))
+                ->form([
+                    DatePicker::make('until')->label(__('membership.fields.frozen_until'))->required()
+                        ->minDate(fn (): string => CarbonImmutable::parse(app(BusinessTime::class)->today())->addDay()->toDateString()),
+                    TextInput::make('reason')->label(__('membership.fields.reason'))->required()->maxLength(255),
+                ])
+                ->action(function (Membership $record, array $data, TableAction $action) use ($actorId): void {
+                    Rejections::run(fn (): Membership => app(FreezeMembership::class)->handle(
+                        $record, substr((string) $data['until'], 0, 10), (string) $data['reason'], $actorId(),
+                    ), $action);
+                    Notification::make()->success()->title(__('membership.notices.frozen'))->send();
+                }),
+            TableAction::make('resume')->label(__('membership.actions.resume'))->icon('heroicon-o-play-circle')
+                ->visible(fn (Membership $record): bool => $record->status === MembershipStatus::Frozen)
+                ->authorize($can)->requiresConfirmation()
+                ->modalDescription(__('membership.hints.resume'))
+                ->action(function (Membership $record, TableAction $action) use ($actorId): void {
+                    Rejections::run(fn (): Membership => app(ResumeMembership::class)->handle($record, $actorId()), $action);
+                    Notification::make()->success()->title(__('membership.notices.resumed'))->send();
+                }),
+            TableAction::make('extend')->label(__('membership.actions.extend'))->icon('heroicon-o-calendar-days')
+                ->visible(fn (Membership $record): bool => in_array($record->status, [MembershipStatus::Active, MembershipStatus::Frozen], true))
+                ->authorize($can)
+                ->form([
+                    TextInput::make('days')->label(__('membership.fields.extend_days'))->integer()->required()->minValue(1)->maxValue(365),
+                    TextInput::make('reason')->label(__('membership.fields.reason'))->required()->maxLength(255),
+                ])
+                ->action(function (Membership $record, array $data, TableAction $action) use ($actorId): void {
+                    Rejections::run(fn (): Membership => app(ExtendMembership::class)->handle(
+                        $record, (int) $data['days'], (string) $data['reason'], $actorId(),
+                    ), $action);
+                    Notification::make()->success()->title(__('membership.notices.extended'))->send();
+                }),
+        ];
     }
 
     /**

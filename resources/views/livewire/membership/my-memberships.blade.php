@@ -13,6 +13,9 @@
                     'bg-gray-100 text-gray-800' => $membership->status !== MembershipStatus::Active,
                 ])>{{ $membership->status->label() }}</span>
             </div>
+            @if ($membership->status === MembershipStatus::Frozen && $membership->frozen_until !== null)
+                <p class="mt-1 text-sm text-gray-700">{{ __('membership.mine.frozen_until', ['date' => Format::date($membership->frozen_until)]) }}</p>
+            @endif
 
             <dl class="mt-3 grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
                 <div>
