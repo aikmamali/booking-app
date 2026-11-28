@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Modules\Booking\Jobs\CloseFinishedSessionsJob;
+use App\Modules\Booking\Jobs\EndFinishedSeasonsJob;
+use App\Modules\Booking\Jobs\ExpirePendingBookingsJob;
 use App\Modules\Booking\Jobs\ExpireWaitlistOffersJob;
 use App\Modules\Booking\Jobs\SendBookingRemindersJob;
 use App\Modules\Membership\Jobs\ExpireMembershipsJob;
@@ -47,6 +49,19 @@ Schedule::job(new SendBookingRemindersJob)
     ->name('send-booking-reminders');
 
 // "MarkNoShows" in spec section 8: closes the bookings of finished sessions.
+// FS-03: held fixed-seat bookings (pending_credits) expire and free their seat.
+Schedule::job(new ExpirePendingBookingsJob)
+    ->everyMinute()
+    ->withoutOverlapping()
+    ->name('expire-pending-bookings');
+
+// FS-01: seats of finished seasons end.
+Schedule::job(new EndFinishedSeasonsJob)
+    ->dailyAt('00:15')
+    ->timezone('Europe/Athens')
+    ->withoutOverlapping()
+    ->name('end-finished-seasons');
+
 Schedule::job(new CloseFinishedSessionsJob)
     ->everyFifteenMinutes()
     ->withoutOverlapping()

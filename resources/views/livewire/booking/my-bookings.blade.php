@@ -2,7 +2,10 @@
 <section class="space-y-4">
     <div class="flex flex-wrap items-center justify-between gap-2">
         <h1 class="text-2xl font-semibold">{{ __('booking.mine.title') }}</h1>
-        <a href="{{ route('app.book') }}" class="rounded-md bg-teal-700 px-4 py-2 text-sm font-semibold text-white">{{ __('booking.book.title') }}</a>
+        <div class="flex flex-wrap gap-2">
+            <a href="{{ route('app.fixed-seats') }}" class="rounded-md border border-teal-700 px-4 py-2 text-sm font-semibold text-teal-800">{{ __('booking.fixed_seats.mine_title') }}</a>
+            <a href="{{ route('app.book') }}" class="rounded-md bg-teal-700 px-4 py-2 text-sm font-semibold text-white">{{ __('booking.book.title') }}</a>
+        </div>
     </div>
     <x-status />
 

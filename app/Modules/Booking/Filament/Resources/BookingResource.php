@@ -225,7 +225,7 @@ final class BookingResource extends Resource
     /**
      * @return array<int, string>
      */
-    private static function customers(string $search): array
+    public static function customers(string $search): array
     {
         return User::role(Role::Customer->value)->whereNull('anonymized_at')
             ->where(fn (Builder $q) => $q->where('last_name', 'like', "%{$search}%")->orWhere('first_name', 'like', "%{$search}%")

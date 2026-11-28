@@ -19,6 +19,11 @@ enum NotificationType: string
     case WaitlistOffered = 'waitlist_offered';
     case MembershipExpiring = 'membership_expiring';
     case LowBalance = 'low_balance';
+    case FixedSeatApproved = 'fixed_seat_approved';
+    case FixedSeatRejected = 'fixed_seat_rejected';
+    case FixedSeatAwaitingCredits = 'fixed_seat_awaiting_credits';
+    case FixedSeatWarning = 'fixed_seat_warning';
+    case FixedSeatRevoked = 'fixed_seat_revoked';
 
     /**
      * @return list<Channel>
@@ -26,7 +31,8 @@ enum NotificationType: string
     public function defaultChannels(): array
     {
         return match ($this) {
-            self::SessionCancelled, self::WaitlistPromoted, self::WaitlistOffered => [Channel::Mail, Channel::Sms],
+            self::SessionCancelled, self::WaitlistPromoted, self::WaitlistOffered,
+            self::FixedSeatAwaitingCredits, self::FixedSeatRevoked => [Channel::Mail, Channel::Sms],
             default => [Channel::Mail],
         };
     }
@@ -40,7 +46,8 @@ enum NotificationType: string
     {
         return match ($this) {
             self::MembershipExpiring, self::LowBalance => ['name', 'package', 'ends_on', 'balance'],
-            self::WaitlistOffered => ['name', 'service', 'date', 'time', 'until'],
+            self::WaitlistOffered, self::FixedSeatAwaitingCredits => ['name', 'service', 'date', 'time', 'until'],
+            self::FixedSeatApproved, self::FixedSeatRejected, self::FixedSeatWarning, self::FixedSeatRevoked => ['name', 'service', 'weekday', 'time', 'season', 'reason'],
             default => ['name', 'service', 'date', 'time', 'instructor', 'reference', 'reason'],
         };
     }
