@@ -38,18 +38,28 @@ return [
         'payment_method' => 'Payment method',
         'adjustment' => 'Credits (+ or −)',
         'reason' => 'Reason',
+        'frozen_until' => 'Paused until',
+        'extend_days' => 'Days to extend',
     ],
     'units' => ['days' => 'days'],
     'actions' => [
         'sell' => 'Sell package',
         'adjust' => 'Correct credits',
+        'freeze' => 'Freeze',
+        'resume' => 'Resume',
+        'extend' => 'Extend',
     ],
     'hints' => [
         'adjustment' => 'Positive to add, negative to remove. In steps of 0.5.',
+        'freeze' => 'The membership is paused from today until the date you set, and its end date moves later by the same days. While paused it pays for no new bookings; existing bookings stay as they are.',
+        'resume' => 'The membership is active again from today. Unused paused days are taken off the end date.',
     ],
     'notices' => [
         'sold' => 'The membership was created.',
         'adjusted' => 'The correction was recorded.',
+        'frozen' => 'The membership is paused.',
+        'resumed' => 'The membership is active again.',
+        'extended' => 'The end date was moved.',
     ],
     'ledger' => [
         'title' => 'Credit history',
@@ -63,6 +73,7 @@ return [
         'nav' => 'Membership',
         'title' => 'My membership',
         'empty' => 'You have no membership yet. Ask at the front desk about our packages.',
+        'frozen_until' => 'Paused until :date',
     ],
     'errors' => [
         'insufficient_credits' => 'Not enough credits.',
@@ -72,5 +83,9 @@ return [
         'package_inactive' => 'The package is not active.',
         'package_incomplete' => 'The package needs credits and at least one service.',
         'starts_in_past' => 'The start date cannot be in the past.',
+        'freeze_until_past' => 'The pause must end after today.',
+        'not_active' => 'The membership is not active.',
+        'not_frozen' => 'The membership is not paused.',
+        'extend_days' => 'The extension must be at least one day.',
     ],
 ];

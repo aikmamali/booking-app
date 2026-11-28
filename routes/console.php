@@ -6,6 +6,7 @@ use App\Modules\Booking\Jobs\CloseFinishedSessionsJob;
 use App\Modules\Booking\Jobs\ExpireWaitlistOffersJob;
 use App\Modules\Booking\Jobs\SendBookingRemindersJob;
 use App\Modules\Membership\Jobs\ExpireMembershipsJob;
+use App\Modules\Membership\Jobs\ResumeFrozenMembershipsJob;
 use App\Modules\Membership\Jobs\WarnExpiringMembershipsJob;
 use App\Modules\Scheduling\Jobs\GenerateSessionsJob;
 use Illuminate\Support\Facades\Schedule;
@@ -20,6 +21,13 @@ Schedule::job(new GenerateSessionsJob)
     ->timezone('Europe/Athens')
     ->withoutOverlapping()
     ->name('generate-sessions');
+
+// MB-06: freezes ending today resume before the expiry run.
+Schedule::job(new ResumeFrozenMembershipsJob)
+    ->dailyAt('00:05')
+    ->timezone('Europe/Athens')
+    ->withoutOverlapping()
+    ->name('resume-frozen-memberships');
 
 Schedule::job(new ExpireMembershipsJob)
     ->dailyAt('00:10')

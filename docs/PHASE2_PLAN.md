@@ -12,8 +12,8 @@
 - [x] Recovery codes, επαναφορά 2FA από άλλον admin
 
 ## 2. Πάγωμα και παράταση συνδρομής (MB-06)
-- [ ] `FreezeMembership`, `UnfreezeMembership`, `ExtendMembership` με μετατόπιση λήξης και audit
-- [ ] Η παγωμένη συνδρομή δεν χρεώνεται και δεν λήγει (`MembershipSelector`, `ExpireMemberships`)
+- [x] `FreezeMembership`, `ResumeMembership`, `ExtendMembership` με μετατόπιση λήξης και audit
+- [x] Η παγωμένη συνδρομή δεν χρεώνεται (`MembershipSelector`) και επανέρχεται μόνη της (`ResumeFrozenMembershipsJob`)
 
 ## 3. Έξοδα (BL-02)
 - [ ] `expenses` με κατηγορία, ποσό, ημερομηνία, σημείωση, συνημμένο
