@@ -14,6 +14,6 @@ final class ListBookings extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [BookingResource::bookAction(), BookingExporter::action()];
+        return [BookingResource::bookAction(), BookingResource::bulkBookAction(), BookingExporter::action()];
     }
 }
