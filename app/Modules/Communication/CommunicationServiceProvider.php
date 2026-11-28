@@ -14,9 +14,11 @@ use App\Modules\Communication\Contracts\SmsSender;
 use App\Modules\Communication\Infrastructure\LogSmsSender;
 use App\Modules\Communication\Listeners\SendCustomerNotifications as Send;
 use App\Modules\Communication\Models\Announcement;
+use App\Modules\Communication\Models\Broadcast;
 use App\Modules\Communication\Models\EmailTemplate;
 use App\Modules\Communication\Models\Note;
 use App\Modules\Communication\Policies\AnnouncementPolicy;
+use App\Modules\Communication\Policies\BroadcastPolicy;
 use App\Modules\Communication\Policies\EmailTemplatePolicy;
 use App\Modules\Communication\Policies\NotePolicy;
 use App\Modules\Membership\Events\LowCreditBalance;
@@ -58,5 +60,6 @@ final class CommunicationServiceProvider extends ServiceProvider
         Gate::policy(Announcement::class, AnnouncementPolicy::class);
         Gate::policy(EmailTemplate::class, EmailTemplatePolicy::class);
         Gate::policy(Note::class, NotePolicy::class);
+        Gate::policy(Broadcast::class, BroadcastPolicy::class);
     }
 }

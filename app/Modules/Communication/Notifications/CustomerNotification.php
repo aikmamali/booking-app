@@ -23,7 +23,7 @@ use Illuminate\Support\Str;
  *
  * Properties are not readonly: the queue must be able to rebuild the object.
  */
-final class CustomerNotification extends Notification implements ShouldQueue
+final class CustomerNotification extends Notification implements ShouldQueue, SmsMessage
 {
     use Queueable;
 
@@ -75,7 +75,7 @@ final class CustomerNotification extends Notification implements ShouldQueue
      */
     public function toSms(User $notifiable): string
     {
-        return Str::limit($this->render($notifiable)['subject'], 155);
+        return Str::limit($this->render($notifiable)['subject'], SmsMessage::MAX_LENGTH - 3);
     }
 
     /**
