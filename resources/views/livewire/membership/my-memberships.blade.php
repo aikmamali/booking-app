@@ -55,4 +55,6 @@
     @empty
         <p class="text-gray-700">{{ __('membership.mine.empty') }}</p>
     @endforelse
+
+    <livewire:communication.trainer-notes />
 </section>

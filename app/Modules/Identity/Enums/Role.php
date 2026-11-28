@@ -12,7 +12,7 @@ enum Role: string
 {
     case Customer = 'customer';
 
-    /** Selectable on schedules and sessions. No admin panel access yet. */
+    /** Selectable on schedules and sessions. Limited admin access: own classes and notes (ADR 0011). */
     case Instructor = 'instructor';
 
     /** Full access. Bypasses permission checks via the Shield super-admin gate. */
@@ -20,7 +20,7 @@ enum Role: string
 
     public function canAccessAdminPanel(): bool
     {
-        return $this === self::Admin;
+        return $this === self::Admin || $this === self::Instructor;
     }
 
     public function isStaff(): bool
