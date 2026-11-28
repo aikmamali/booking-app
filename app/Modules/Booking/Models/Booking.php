@@ -31,6 +31,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property ?int $membership_id
  * @property ?int $fixed_seat_id
  * @property BookingStatus $status
+ * @property ?CarbonImmutable $hold_until
  * @property Credits $credits_charged
  * @property BookingSource $source
  * @property bool $remind
@@ -56,7 +57,7 @@ class Booking extends Model
 
     /** @var list<string> */
     protected $fillable = [
-        'user_id', 'class_session_id', 'membership_id', 'fixed_seat_id', 'status', 'credits_charged', 'source', 'remind',
+        'user_id', 'class_session_id', 'membership_id', 'fixed_seat_id', 'status', 'hold_until', 'credits_charged', 'source', 'remind',
     ];
 
     /**
@@ -128,6 +129,7 @@ class Booking extends Model
             'cancelled_at' => 'immutable_datetime',
             'checked_in_at' => 'immutable_datetime',
             'reminded_at' => 'immutable_datetime',
+            'hold_until' => 'immutable_datetime',
             'created_at' => 'immutable_datetime',
         ];
     }

@@ -68,6 +68,7 @@ final class BookingSummaries
             cancelReason: $booking->cancel_reason,
             ics: BookingCalendar::ics($booking),
             googleCalendarUrl: BookingCalendar::googleUrl($booking),
+            holdUntil: $booking->hold_until,
         );
     }
 }

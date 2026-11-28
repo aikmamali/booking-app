@@ -20,7 +20,17 @@ final class BookingRequest extends Data
         public bool $remind = true,
         public ?int $actor_id = null,
         public ?string $override_reason = null,
+        public ?int $fixed_seat_id = null,
     ) {}
+
+    /**
+     * FS-03: fixed seats are booked before the booking window opens and regardless of the
+     * customer's daily and active limits; capacity and credits still apply.
+     */
+    public function bypassesLimits(): bool
+    {
+        return $this->isOverride() || $this->fixed_seat_id !== null;
+    }
 
     public function isOverride(): bool
     {

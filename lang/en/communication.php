@@ -18,6 +18,11 @@ return [
         'waitlist_offered' => 'Seat offer from the waitlist',
         'membership_expiring' => 'Membership expiring',
         'low_balance' => 'Low credit balance',
+        'fixed_seat_approved' => 'Fixed seat approved',
+        'fixed_seat_rejected' => 'Fixed seat rejected',
+        'fixed_seat_awaiting_credits' => 'Fixed seat: credits needed',
+        'fixed_seat_warning' => 'Fixed seat: cancellation warning',
+        'fixed_seat_revoked' => 'Fixed seat removed',
     ],
     'actions' => [
         'booking_confirmed' => 'View booking',
@@ -29,6 +34,11 @@ return [
         'waitlist_offered' => 'Accept the seat',
         'membership_expiring' => 'My membership',
         'low_balance' => 'My membership',
+        'fixed_seat_approved' => 'My fixed seats',
+        'fixed_seat_rejected' => 'My fixed seats',
+        'fixed_seat_awaiting_credits' => 'My membership',
+        'fixed_seat_warning' => 'My fixed seats',
+        'fixed_seat_revoked' => 'My fixed seats',
     ],
     'templates' => [
         'booking_confirmed' => [
@@ -66,6 +76,26 @@ return [
         'low_balance' => [
             'subject' => 'You have :balance credits left',
             'body' => 'You have :balance credits left on ":package". Renew at the front desk to keep booking.',
+        ],
+        'fixed_seat_approved' => [
+            'subject' => 'Your fixed seat is approved: :service, :weekday :time',
+            'body' => "Your fixed seat in :service every :weekday at :time is approved for the season \":season\".\n\nYour bookings are made automatically and charged to your membership.",
+        ],
+        'fixed_seat_rejected' => [
+            'subject' => 'Your fixed seat request was not approved: :service, :weekday :time',
+            'body' => 'Unfortunately your request for a fixed seat in :service every :weekday at :time was not approved (:reason).',
+        ],
+        'fixed_seat_awaiting_credits' => [
+            'subject' => 'We are holding your seat: :service, :date :time',
+            'body' => "Your fixed seat in :service on :date at :time is waiting for you, but you have no credits available.\n\nRenew your membership by :until to confirm the booking. After that the seat is released.",
+        ],
+        'fixed_seat_warning' => [
+            'subject' => 'Your fixed seat is at risk: :service, :weekday :time',
+            'body' => "You have cancelled your fixed seat in :service every :weekday at :time several times in a row.\n\nOne more cancellation in a row and the seat will be removed.",
+        ],
+        'fixed_seat_revoked' => [
+            'subject' => 'Your fixed seat was removed: :service, :weekday :time',
+            'body' => "Your fixed seat in :service every :weekday at :time was removed (:reason).\n\nIts upcoming bookings were cancelled and the credits returned to your membership.",
         ],
     ],
     'preferences' => [

@@ -8,6 +8,11 @@ use App\Modules\Booking\Events\BookingCancelled;
 use App\Modules\Booking\Events\BookingConfirmed;
 use App\Modules\Booking\Events\BookingReminderDue;
 use App\Modules\Booking\Events\BookingRescheduled;
+use App\Modules\Booking\Events\FixedSeatApproved;
+use App\Modules\Booking\Events\FixedSeatAwaitingCredits;
+use App\Modules\Booking\Events\FixedSeatRejected;
+use App\Modules\Booking\Events\FixedSeatRevoked;
+use App\Modules\Booking\Events\FixedSeatWarning;
 use App\Modules\Booking\Events\WaitlistOffered;
 use App\Modules\Booking\Events\WaitlistPromoted;
 use App\Modules\Communication\Contracts\SmsSender;
@@ -43,6 +48,11 @@ final class CommunicationServiceProvider extends ServiceProvider
         WaitlistOffered::class => 'waitlistOffered',
         MembershipExpiringSoon::class => 'membershipExpiring',
         LowCreditBalance::class => 'lowBalance',
+        FixedSeatApproved::class => 'fixedSeat',
+        FixedSeatRejected::class => 'fixedSeat',
+        FixedSeatWarning::class => 'fixedSeat',
+        FixedSeatRevoked::class => 'fixedSeat',
+        FixedSeatAwaitingCredits::class => 'fixedSeatAwaitingCredits',
     ];
 
     public function register(): void

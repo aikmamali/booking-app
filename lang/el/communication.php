@@ -18,6 +18,11 @@ return [
         'waitlist_offered' => 'Προσφορά θέσης από λίστα αναμονής',
         'membership_expiring' => 'Λήξη συνδρομής',
         'low_balance' => 'Χαμηλό υπόλοιπο credits',
+        'fixed_seat_approved' => 'Έγκριση σταθερής θέσης',
+        'fixed_seat_rejected' => 'Απόρριψη σταθερής θέσης',
+        'fixed_seat_awaiting_credits' => 'Σταθερή θέση: χρειάζονται credits',
+        'fixed_seat_warning' => 'Σταθερή θέση: προειδοποίηση ακυρώσεων',
+        'fixed_seat_revoked' => 'Αφαίρεση σταθερής θέσης',
     ],
     'actions' => [
         'booking_confirmed' => 'Δες την κράτηση',
@@ -29,6 +34,11 @@ return [
         'waitlist_offered' => 'Αποδοχή θέσης',
         'membership_expiring' => 'Η συνδρομή μου',
         'low_balance' => 'Η συνδρομή μου',
+        'fixed_seat_approved' => 'Οι σταθερές θέσεις μου',
+        'fixed_seat_rejected' => 'Οι σταθερές θέσεις μου',
+        'fixed_seat_awaiting_credits' => 'Η συνδρομή μου',
+        'fixed_seat_warning' => 'Οι σταθερές θέσεις μου',
+        'fixed_seat_revoked' => 'Οι σταθερές θέσεις μου',
     ],
     'templates' => [
         'booking_confirmed' => [
@@ -66,6 +76,26 @@ return [
         'low_balance' => [
             'subject' => 'Σου έμειναν :balance credits',
             'body' => 'Στη συνδρομή «:package» σου έμειναν :balance credits. Ανανέωσε στην υποδοχή για να συνεχίσεις τις κρατήσεις.',
+        ],
+        'fixed_seat_approved' => [
+            'subject' => 'Η σταθερή σου θέση εγκρίθηκε: :service, :weekday :time',
+            'body' => "Η σταθερή σου θέση στο :service κάθε :weekday στις :time εγκρίθηκε για τη σεζόν «:season».\n\nΟι κρατήσεις σου γίνονται αυτόματα και χρεώνονται στη συνδρομή σου.",
+        ],
+        'fixed_seat_rejected' => [
+            'subject' => 'Η αίτηση για σταθερή θέση δεν εγκρίθηκε: :service, :weekday :time',
+            'body' => 'Δυστυχώς η αίτησή σου για σταθερή θέση στο :service κάθε :weekday στις :time δεν εγκρίθηκε (:reason).',
+        ],
+        'fixed_seat_awaiting_credits' => [
+            'subject' => 'Κρατάμε τη θέση σου: :service, :date :time',
+            'body' => "Η σταθερή σου θέση στο :service της :date στις :time σε περιμένει, αλλά δεν υπάρχουν διαθέσιμα credits.\n\nΑνανέωσε τη συνδρομή σου έως :until για να επιβεβαιωθεί η κράτηση. Μετά η θέση ελευθερώνεται.",
+        ],
+        'fixed_seat_warning' => [
+            'subject' => 'Η σταθερή σου θέση κινδυνεύει: :service, :weekday :time',
+            'body' => "Ακύρωσες αρκετές φορές στη σειρά τη σταθερή σου θέση στο :service κάθε :weekday στις :time.\n\nΜε την επόμενη συνεχόμενη ακύρωση η θέση θα αφαιρεθεί.",
+        ],
+        'fixed_seat_revoked' => [
+            'subject' => 'Η σταθερή σου θέση αφαιρέθηκε: :service, :weekday :time',
+            'body' => "Η σταθερή σου θέση στο :service κάθε :weekday στις :time αφαιρέθηκε (:reason).\n\nΟι επόμενες κρατήσεις της ακυρώθηκαν και τα credits επιστράφηκαν στη συνδρομή σου.",
         ],
     ],
     'preferences' => [

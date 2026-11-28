@@ -24,5 +24,6 @@ final readonly class BookingSummary
         public ?string $cancelReason,
         public string $ics,
         public string $googleCalendarUrl,
+        public ?CarbonImmutable $holdUntil = null,
     ) {}
 }

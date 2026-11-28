@@ -7,6 +7,7 @@ namespace App\Modules\Booking\Actions;
 use App\Modules\Booking\Enums\BookingStatus;
 use App\Modules\Booking\Exceptions\BookingRejected;
 use App\Modules\Booking\Models\Booking;
+use App\Modules\Booking\Models\FixedSeat;
 use App\Modules\Booking\Settings\BookingPolicySettings;
 use App\Modules\Membership\Contracts\CreditLedger;
 use App\Shared\Clock;
@@ -64,5 +65,10 @@ final readonly class MarkAttendance
             'status' => $outcome,
             'checked_in_at' => $outcome === BookingStatus::Attended ? $this->clock->now() : null,
         ])->save();
+
+        // FS-04: attending resets the fixed seat's cancellations in a row.
+        if ($outcome === BookingStatus::Attended && $booking->fixed_seat_id !== null) {
+            FixedSeat::query()->whereKey($booking->fixed_seat_id)->update(['consecutive_cancellations' => 0]);
+        }
     }
 }

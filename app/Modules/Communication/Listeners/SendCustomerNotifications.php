@@ -6,11 +6,18 @@ namespace App\Modules\Communication\Listeners;
 
 use App\Modules\Booking\Contracts\BookingSummaries;
 use App\Modules\Booking\Contracts\BookingSummary;
+use App\Modules\Booking\Contracts\FixedSeatSummaries;
+use App\Modules\Booking\Contracts\FixedSeatSummary;
 use App\Modules\Booking\Contracts\WaitlistOfferSummary;
 use App\Modules\Booking\Events\BookingCancelled;
 use App\Modules\Booking\Events\BookingConfirmed;
 use App\Modules\Booking\Events\BookingReminderDue;
 use App\Modules\Booking\Events\BookingRescheduled;
+use App\Modules\Booking\Events\FixedSeatApproved;
+use App\Modules\Booking\Events\FixedSeatAwaitingCredits;
+use App\Modules\Booking\Events\FixedSeatRejected;
+use App\Modules\Booking\Events\FixedSeatRevoked;
+use App\Modules\Booking\Events\FixedSeatWarning;
 use App\Modules\Booking\Events\WaitlistOffered;
 use App\Modules\Booking\Events\WaitlistPromoted;
 use App\Modules\Communication\Enums\NotificationType;
@@ -32,6 +39,7 @@ final readonly class SendCustomerNotifications
 {
     public function __construct(
         private BookingSummaries $bookings,
+        private FixedSeatSummaries $fixedSeats,
         private MembershipSummaries $memberships,
         private BusinessTime $time,
     ) {}
@@ -73,6 +81,45 @@ final readonly class SendCustomerNotifications
                 'until' => $this->time->toLocal($offer->offeredUntil)->format('H:i'),
             ], route('app.bookings')));
         }
+    }
+
+    public function fixedSeatAwaitingCredits(FixedSeatAwaitingCredits $event): void
+    {
+        $booking = $this->bookings->find($event->bookingId);
+        $user = $booking instanceof BookingSummary ? $this->recipient($booking->userId) : null;
+
+        if ($booking instanceof BookingSummary && $user instanceof User && $booking->holdUntil instanceof CarbonImmutable) {
+            $user->notify(new CustomerNotification(NotificationType::FixedSeatAwaitingCredits, [
+                ...$this->when($booking->startsAt, $user),
+                'service' => $booking->serviceName,
+                'until' => $this->time->toLocal($booking->holdUntil)->format('d/m H:i'),
+            ], route('app.membership')));
+        }
+    }
+
+    public function fixedSeat(FixedSeatApproved|FixedSeatRejected|FixedSeatWarning|FixedSeatRevoked $event): void
+    {
+        $seat = $this->fixedSeats->find($event->fixedSeatId);
+        $user = $seat instanceof FixedSeatSummary ? $this->recipient($seat->userId) : null;
+
+        if (! $seat instanceof FixedSeatSummary || ! $user instanceof User) {
+            return;
+        }
+
+        $type = match (true) {
+            $event instanceof FixedSeatApproved => NotificationType::FixedSeatApproved,
+            $event instanceof FixedSeatRejected => NotificationType::FixedSeatRejected,
+            $event instanceof FixedSeatWarning => NotificationType::FixedSeatWarning,
+            default => NotificationType::FixedSeatRevoked,
+        };
+
+        $user->notify(new CustomerNotification($type, [
+            'service' => $seat->serviceName,
+            'weekday' => $seat->weekday,
+            'time' => $seat->time,
+            'season' => $seat->season,
+            'reason' => (string) $seat->reason,
+        ], route('app.fixed-seats')));
     }
 
     public function membershipExpiring(MembershipExpiringSoon $event): void

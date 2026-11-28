@@ -6,12 +6,20 @@ namespace App\Modules\Booking;
 
 use App\Modules\Booking\Contracts\NoRequiredForms;
 use App\Modules\Booking\Contracts\RequiredForms;
+use App\Modules\Booking\Events\BookingCancelled;
 use App\Modules\Booking\Events\SeatFreed;
+use App\Modules\Booking\Listeners\BookFixedSeatsForNewSessions;
 use App\Modules\Booking\Listeners\CancelBookingsWhenSessionCancelled;
 use App\Modules\Booking\Listeners\CancelFutureBookingsOfDeletedUser;
+use App\Modules\Booking\Listeners\ConfirmHeldSeatsAfterPurchase;
 use App\Modules\Booking\Listeners\PromoteWhenSeatFreed;
+use App\Modules\Booking\Listeners\TrackFixedSeatCancellations;
 use App\Modules\Booking\Models\Booking;
+use App\Modules\Booking\Models\FixedSeat;
+use App\Modules\Booking\Models\Season;
 use App\Modules\Booking\Policies\BookingPolicy;
+use App\Modules\Booking\Policies\FixedSeatPolicy;
+use App\Modules\Booking\Policies\SeasonPolicy;
 use App\Modules\Booking\Rules\BookingRuleChain;
 use App\Modules\Booking\Rules\HasCapacity;
 use App\Modules\Booking\Rules\HasValidMembership;
@@ -22,8 +30,10 @@ use App\Modules\Booking\Rules\WithinActiveLimit;
 use App\Modules\Booking\Rules\WithinDailyLimit;
 use App\Modules\Booking\Support\SeatCounter;
 use App\Modules\Identity\Events\UserDeleted;
+use App\Modules\Membership\Events\MembershipSold;
 use App\Modules\Scheduling\Contracts\SessionOccupancy;
 use App\Modules\Scheduling\Events\SessionCancelled;
+use App\Modules\Scheduling\Events\SessionsGenerated;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -61,5 +71,10 @@ final class BookingServiceProvider extends ServiceProvider
         Event::listen(SessionCancelled::class, CancelBookingsWhenSessionCancelled::class);
         Event::listen(UserDeleted::class, CancelFutureBookingsOfDeletedUser::class);
         Event::listen(SeatFreed::class, PromoteWhenSeatFreed::class);
+        Event::listen(SessionsGenerated::class, BookFixedSeatsForNewSessions::class);
+        Event::listen(MembershipSold::class, ConfirmHeldSeatsAfterPurchase::class);
+        Event::listen(BookingCancelled::class, TrackFixedSeatCancellations::class);
+        Gate::policy(Season::class, SeasonPolicy::class);
+        Gate::policy(FixedSeat::class, FixedSeatPolicy::class);
     }
 }

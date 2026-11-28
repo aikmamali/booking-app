@@ -48,13 +48,14 @@ final readonly class BookSession
         $this->guardOverride($request);
 
         $context = $this->contexts->make($request->user_id, $session, $ignoreBookingId);
-        $this->rules->assertPasses($context, $request->isOverride());
+        $this->rules->assertPasses($context, $request->bypassesLimits());
 
         $cost = $session->service->credit_cost;
         $booking = Booking::query()->create([
             'user_id' => $request->user_id,
             'class_session_id' => $session->id,
             'membership_id' => $context->membership->membershipId,
+            'fixed_seat_id' => $request->fixed_seat_id,
             'status' => BookingStatus::Confirmed,
             'credits_charged' => $cost,
             'source' => $request->source,
