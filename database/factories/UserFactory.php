@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Modules\Identity\Enums\Locale;
 use App\Modules\Identity\Enums\Role;
 use App\Modules\Identity\Models\User;
+use App\Modules\Identity\Support\Totp;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -63,6 +64,18 @@ class UserFactory extends Factory
     public function admin(): static
     {
         return $this->withRole(Role::Admin);
+    }
+
+    /**
+     * ID-07: 2FA already set up, with known recovery codes "aaaaa-11111" … "aaaaa-88888".
+     */
+    public function withTwoFactor(): static
+    {
+        return $this->state(fn (): array => [
+            'two_factor_secret' => (new Totp)->newSecret(),
+            'two_factor_recovery_codes' => array_map(fn (int $i): string => 'aaaaa-'.str_repeat((string) $i, 5), range(1, 8)),
+            'two_factor_confirmed_at' => now(),
+        ]);
     }
 
     public function withRole(Role $role): static

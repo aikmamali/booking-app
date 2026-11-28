@@ -38,6 +38,10 @@ use Spatie\Permission\Traits\HasRoles;
  * @property ?CarbonImmutable $terms_accepted_at
  * @property ?CarbonImmutable $last_login_at
  * @property ?CarbonImmutable $anonymized_at
+ * @property ?string $two_factor_secret
+ * @property ?list<string> $two_factor_recovery_codes
+ * @property ?CarbonImmutable $two_factor_confirmed_at
+ * @property ?int $two_factor_last_step
  */
 #[UseFactory(UserFactory::class)]
 class User extends Authenticatable implements FilamentUser, HasName, MustVerifyEmail
@@ -70,6 +74,8 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         'password',
         'remember_token',
         'checkin_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
     ];
 
     public static function newCheckinToken(): string
@@ -97,6 +103,19 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
         $name = $this->getRoleNames()->first();
 
         return is_string($name) ? Role::tryFrom($name) : null;
+    }
+
+    /**
+     * ID-07: everyone who can open the admin panel must use 2FA.
+     */
+    public function requiresTwoFactor(): bool
+    {
+        return $this->primaryRole()?->canAccessAdminPanel() ?? false;
+    }
+
+    public function hasTwoFactorEnabled(): bool
+    {
+        return $this->two_factor_secret !== null && $this->two_factor_confirmed_at !== null;
     }
 
     public function isAnonymized(): bool
@@ -130,6 +149,10 @@ class User extends Authenticatable implements FilamentUser, HasName, MustVerifyE
             'terms_accepted_at' => 'datetime',
             'last_login_at' => 'datetime',
             'anonymized_at' => 'datetime',
+            'two_factor_secret' => 'encrypted',
+            'two_factor_recovery_codes' => 'encrypted:array',
+            'two_factor_confirmed_at' => 'datetime',
+            'two_factor_last_step' => 'integer',
         ];
     }
 }

@@ -6,6 +6,7 @@ namespace App\Modules\Identity\Filament\Resources;
 
 use App\Modules\Identity\Actions\DeleteAccount;
 use App\Modules\Identity\Actions\RegenerateCheckinToken;
+use App\Modules\Identity\Actions\ResetTwoFactor;
 use App\Modules\Identity\Actions\SendInvitation;
 use App\Modules\Identity\Enums\Locale;
 use App\Modules\Identity\Enums\Role;
@@ -151,6 +152,17 @@ final class UserResource extends Resource
                 ->action(function (User $record, RegenerateCheckinToken $regenerate): void {
                     $regenerate->handle($record);
                     Notification::make()->success()->title(__('identity.admin.checkin_regenerated'))->send();
+                }),
+            Action::make('resetTwoFactor')->label(__('identity.two_factor.reset'))
+                ->icon('heroicon-o-shield-exclamation')->color('warning')->requiresConfirmation()
+                ->modalDescription(__('identity.two_factor.reset_confirm'))
+                ->visible(fn (User $record): bool => $record->two_factor_secret !== null && ! $record->is(auth()->user()))
+                ->authorize(fn (User $record): bool => auth()->user()?->can('update', $record) ?? false)
+                ->action(function (User $record, ResetTwoFactor $reset): void {
+                    $actor = auth()->user();
+                    abort_unless($actor instanceof User, 403);
+                    $reset->handle($record, $actor);
+                    Notification::make()->success()->title(__('identity.two_factor.reset_done'))->send();
                 }),
             Action::make('anonymize')->label(__('identity.admin.anonymize'))
                 ->icon('heroicon-o-trash')->color('danger')->requiresConfirmation()

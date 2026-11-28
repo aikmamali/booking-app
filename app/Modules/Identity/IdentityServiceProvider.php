@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Identity;
 
 use App\Modules\Identity\Console\CreateAdmin;
+use App\Modules\Identity\Console\ResetTwoFactorCommand;
 use App\Modules\Identity\Listeners\RecordLastLogin;
 use App\Modules\Identity\Models\User;
 use App\Modules\Identity\Policies\UserPolicy;
@@ -19,7 +20,7 @@ final class IdentityServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
-            $this->commands([CreateAdmin::class]);
+            $this->commands([CreateAdmin::class, ResetTwoFactorCommand::class]);
         }
 
         Gate::policy(User::class, UserPolicy::class);
