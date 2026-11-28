@@ -1,6 +1,6 @@
 # ADR 0002: Phase 1 runs with customer, instructor and admin roles
 
-- Status: accepted
+- Status: accepted; instructor access amended by ADR 0011
 - Date: 2026-11-21
 - Decided by: Katerina
 

@@ -17,14 +17,15 @@ beforeEach(function (): void {
     $this->admin = User::factory()->admin()->create(['phone' => null]);
 });
 
-it('lets only administrators into the admin panel', function (?Role $role, int $status): void {
+it('lets staff, not customers, into the admin panel', function (?Role $role, int $status): void {
     $user = $role instanceof Role ? User::factory()->withRole($role)->create() : $this->admin;
 
     $this->actingAs($user)->get('/admin')->assertStatus($status);
 })->with([
     'admin' => [null, 200],
     'customer' => [Role::Customer, 403],
-    'instructor' => [Role::Instructor, 403],
+    // ADR 0011: limited access (own classes and notes).
+    'instructor' => [Role::Instructor, 200],
 ]);
 
 it('lists users with their roles', function (): void {

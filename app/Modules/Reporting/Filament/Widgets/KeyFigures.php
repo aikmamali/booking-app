@@ -19,6 +19,12 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
  */
 final class KeyFigures extends StatsOverviewWidget
 {
+    /** Business figures are for staff with access to the underlying data, not instructors. */
+    public static function canView(): bool
+    {
+        return auth()->user()?->can('view_any_payment') ?? false;
+    }
+
     protected static ?int $sort = 1;
 
     protected static ?string $pollingInterval = null;

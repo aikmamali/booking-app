@@ -15,6 +15,12 @@ use Filament\Widgets\Widget;
  */
 final class TodaySessions extends Widget
 {
+    /** Business figures are for staff with access to the underlying data, not instructors. */
+    public static function canView(): bool
+    {
+        return auth()->user()?->can('view_any_class::session') ?? false;
+    }
+
     protected static ?int $sort = 2;
 
     protected int|string|array $columnSpan = 'full';
